@@ -1,0 +1,8 @@
+logs
+play.h2.db
+project/project
+project/target
+target
+tmp
+.*
+dist
