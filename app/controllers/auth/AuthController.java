@@ -34,7 +34,7 @@ public class AuthController extends Controller {
 
 				Login formValue = loginForm.get();
 
-				new AuthService().authenticate(formValue.name, session());
+				new AuthService().authenticate(formValue.name, formValue.password, session());
 
 				return redirect(formValue.callback);
 

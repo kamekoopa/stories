@@ -8,5 +8,8 @@ public class Login {
 	public String name;
 
 	@Required
+	public String password;
+
+	@Required
 	public String callback;
 }

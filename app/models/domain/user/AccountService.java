@@ -10,8 +10,8 @@ public class AccountService {
 		this.userRepository = new UserRepository();
 	}
 
-	public User create(final String userName){
-		return this.userRepository.create(userName);
+	public User create(final String userName, final String password){
+		return this.userRepository.create(userName, password);
 	}
 
 	public User obtainById(final Long id) throws UserNotFoundException {

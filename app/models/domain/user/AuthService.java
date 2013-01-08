@@ -39,21 +39,21 @@ public class AuthService {
 		return name;
 	}
 
-	public String authenticate(final String name, final Session session) throws UnAuthorizedIdentityException {
+	public String authenticate(final String username, final String password, final Session session) throws UnAuthorizedIdentityException {
 
 		try {
 
-			User user = this.userRepository.findByName(name);
+			User user = this.userRepository.findByAuthenticationInfo(username, password);
 
-			String sessionId = this.createSessionId(user.users.name);
+			String sessionId = this.createSessionId(user.getUserName());
 
-			this.cache.set(sessionId, user.users.name);
+			this.cache.set(sessionId, user.getUserName());
 			session.put("sessid", sessionId);
 
 			return sessionId;
 
 		} catch (UserNotFoundException e) {
-			throw new UnAuthorizedIdentityException(e.getMessage());
+			throw new UnAuthorizedIdentityException("invalid username or password");
 		}
 	}
 

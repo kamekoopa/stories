@@ -19,6 +19,18 @@ public class User {
 		return this;
 	}
 
+	public Long getId(){
+		return this.users.id;
+	}
+
+	public String getUserName(){
+		return this.users.name;
+	}
+
+	public String getPasswordHash(){
+		return this.users.password;
+	}
+
 
 	public JsonNode toJson(){
 

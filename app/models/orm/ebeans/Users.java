@@ -27,6 +27,9 @@ public class Users extends Model {
 	@Constraints.Required
 	public String name;
 
+	@Constraints.Required
+	public String password;
+
 	@OneToMany
 	public List<StoryCards> createdCards = new ArrayList<>();
 

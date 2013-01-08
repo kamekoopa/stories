@@ -42,10 +42,13 @@ public class UsersController extends Controller {
 				}else if(payload.get("name").asText() == null){
 					throw new ApplicationException(BAD_REQUEST, "name undefined");
 
+				}else if(payload.get("password").asText() == null){
+					throw new ApplicationException(BAD_REQUEST, "password undefined");
+
 				}else{
 					return ImmutablePair.of(
 						CREATED,
-						accountService.create(payload.get("name").asText()).toJson()
+						accountService.create(payload.get("name").asText(), payload.get("password").asText()).toJson()
 					);
 				}
 			}
