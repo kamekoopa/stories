@@ -17,48 +17,6 @@ public class UsersController extends Controller {
 
 	private static final AccountService accountService = new AccountService();
 
-	@BodyParser.Of(BodyParser.Json.class)
-	public static Result authenticate(){
-		final JsonNode payload = request().body().asJson();
-
-		return execute(new Execution(){
-			@Override public ImmutablePair<Integer, ? extends JsonNode> invoke() throws Throwable {
-
-				if(payload == null){
-					throw new ApplicationException(BAD_REQUEST, "requested content is not json");
-
-				}else if(payload.get("name").asText() == null){
-					throw new ApplicationException(BAD_REQUEST, "name undefined");
-
-				}else{
-
-					String token = accountService.authenticate(payload.get("name").asText());
-					session("login_token", token);
-
-					return ImmutablePair.of(
-						OK,
-						JsonNodeFactory.instance.objectNode()
-					);
-				}
-			}
-		});
-	}
-
-	public static Result logout(){
-		return execute(new Execution(){
-			@Override public ImmutablePair<Integer, ? extends JsonNode> invoke() throws Throwable {
-
-				String token = session("login_token");
-				accountService.logout(token);
-
-				return ImmutablePair.of(
-					OK,
-					JsonNodeFactory.instance.objectNode()
-				);
-			}
-		});
-	}
-
 	public static Result get(final Long id) {
 
 		return execute(new Execution(){

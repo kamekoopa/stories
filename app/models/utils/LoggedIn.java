@@ -5,7 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import models.domain.cache.OnMemoryCache;
+import models.domain.user.AuthService;
+import models.domain.user.UnAuthorizedIdentityException;
 import play.mvc.Action;
 import play.mvc.Http.Context;
 import play.mvc.Result;
@@ -19,24 +20,19 @@ public @interface LoggedIn {
 
 	static class LoggedInAction extends Action<LoggedIn>{
 
+		static final AuthService authService = new AuthService();
+
 		@Override
 		public Result call(Context ctx) throws Throwable {
 
-			String token =ctx.session().get("login_token");
+			try {
 
-			if(token == null || token.equals("")){
+				authService.getIdentityWithSessionIdRegenerate(ctx.session());
+
+				return this.delegate.call(ctx);
+
+			} catch (UnAuthorizedIdentityException e) {
 				return redirect(routes.Application.index());
-
-			}else{
-
-				String auth = OnMemoryCache.instance.get(token);
-				System.out.println(auth);
-				if(auth == null || auth.equals("")){
-					return redirect(routes.Application.index());
-
-				}else{
-					return this.delegate.call(ctx);
-				}
 			}
 		}
 	}

@@ -1,6 +1,5 @@
 package controllers;
 
-import models.utils.LoggedIn;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;
@@ -36,11 +35,4 @@ public class Application extends Controller {
 
 		return ok(index.render("Your new application is ready."));
 	}
-
-	@LoggedIn
-	public static Result logged(){
-
-		return ok();
-	}
-
 }

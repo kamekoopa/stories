@@ -1,0 +1,24 @@
+@(form:play.data.Form[views.auth.form.Login])
+@main(title = "ログイン") {
+
+	<h1>ログイン</h1>
+	
+	@if(form.hasErrors) {
+		@for(entry <- form.errors.entrySet){
+			@for(validationError <- entry.getValue){
+				@validationError.key : @Messages(validationError.message, validationError.arguments)<br />
+			}
+		}
+	}
+	
+	<form method="POST" action="/auth/authentication" enctype="application/x-www-form-urlencoded">
+		<input name="callback" type="hidden" value="/auth/loggedin" />
+		
+		<div>
+			<label>name</label><span><input name="name" type="text" value="@form.data().get("name")"/></span>
+		</div>
+		<div>
+			<span><input name="submit" type="submit" value="ログイン" /></span>
+		</div>
+	</form>
+}

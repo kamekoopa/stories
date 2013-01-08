@@ -4,10 +4,16 @@
 
 # Home page
 GET     /                           controllers.Application.index()
-GET     /logged                     controllers.Application.logged()
 
-POST    /authentication             controllers.users.UsersController.authenticate()
-DELETE  /authentication             controllers.users.UsersController.logout()
+
+# authorization / authentication
+
+GET     /auth/login                 controllers.auth.AuthController.login()
+GET     /auth/loggedin              controllers.auth.AuthController.loggedin()
+
+POST    /auth/authentication        controllers.auth.AuthController.authenticate()
+POST    /auth/deauthentication      controllers.auth.AuthController.deauthenticate()
+
 
 GET     /users                      controllers.users.UsersController.get(id:Long)
 POST    /users                      controllers.users.UsersController.create()
