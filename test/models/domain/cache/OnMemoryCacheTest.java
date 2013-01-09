@@ -6,6 +6,8 @@ import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.TimeUnit;
 
+import models.domain.model.OnMemoryCache;
+
 import org.junit.Before;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;

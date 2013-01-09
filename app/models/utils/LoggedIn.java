@@ -5,8 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import models.domain.user.AuthService;
-import models.domain.user.UnAuthorizedIdentityException;
+import models.applications.AuthService;
+import models.domain.model.auth.UnAuthorizedIdentityException;
 import play.mvc.Action;
 import play.mvc.Http.Context;
 import play.mvc.Result;
@@ -20,14 +20,14 @@ public @interface LoggedIn {
 
 	static class LoggedInAction extends Action<LoggedIn>{
 
-		static final AuthService authService = new AuthService();
+		static final AuthService authService = InjectorWrapper.get(AuthService.class);
 
 		@Override
 		public Result call(Context ctx) throws Throwable {
 
 			try {
 
-				authService.getIdentityWithSessionIdRegenerate(ctx.session());
+				authService.getSessionOwnerWithRegenerateSessionId(ctx.session());
 
 				return this.delegate.call(ctx);
 

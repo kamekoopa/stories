@@ -10,7 +10,8 @@ object ApplicationBuild extends Build {
     val appDependencies = Seq(
       // Add your project dependencies here,
       "commons-codec"      % "commons-codec" % "1.7",
-      "org.apache.commons" % "commons-lang3" % "3.1"
+      "org.apache.commons" % "commons-lang3" % "3.1",
+      "com.google.inject"  % "guice"         % "3.0"
       
     )
 

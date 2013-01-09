@@ -15,10 +15,12 @@ POST    /auth/authentication        controllers.auth.AuthController.authenticate
 POST    /auth/deauthentication      controllers.auth.AuthController.deauthenticate()
 
 
-GET     /users                      controllers.users.UsersController.get(id:Long)
-POST    /users                      controllers.users.UsersController.create()
-PUT     /users                      controllers.users.UsersController.update(id:Long)
-DELETE  /users                      controllers.users.UsersController.remove(id:Long)
+# user registration
+
+GET     /users/new/input            controllers.users.UsersController.input()
+POST    /users/new/confirmation     controllers.users.UsersController.confirm()
+POST    /users/new/registry         controllers.users.UsersController.register()
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

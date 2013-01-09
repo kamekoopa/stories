@@ -1,0 +1,35 @@
+@(form:play.data.Form[models.domain.model.user.formvalue.UserRegistration])
+@main(title = "確認") {
+
+	<div class="container-fluid">
+		<div class="row-fluid" style="text-align: center;">
+		
+			<h1 class="span4 offset4">内容を確認してください</h1>
+			
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+	
+		<div class="row-fluid">
+			
+			<div class="span4 offset4">
+				
+				<dl class="dl-horizontal">
+					<dt>ユーザ名</dt> <dd>@form.data().get("username")</dd>
+				</dl>
+				
+				<form method="POST" action="/users/new/registry" enctype="application/x-www-form-urlencoded">
+						<input
+							type="hidden" name="username" value="@form.data().get("username")" placeholder="半角英数字" />
+						
+						<input
+							type="hidden" name="password" value="@form.data().get("password")" placeholder="半角英数字"/>
+						
+						<div style="text-align: center;"><button type="submit" class="btn btn-success btn-large" >作成</button></div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+}

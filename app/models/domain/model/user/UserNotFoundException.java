@@ -1,4 +1,4 @@
-package models.domain.user;
+package models.domain.model.user;
 
 import models.exception.ApplicationException;
 

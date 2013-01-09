@@ -1,4 +1,4 @@
-package models.domain.cache;
+package models.domain.model;
 
 import java.util.Collections;
 import java.util.HashMap;

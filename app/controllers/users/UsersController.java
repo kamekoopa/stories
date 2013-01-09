@@ -1,114 +1,38 @@
 package controllers.users;
 
-import models.domain.user.AccountService;
-import models.exception.ApplicationException;
-import models.utils.ReturnableAsRestJsonResult;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.JsonNodeFactory;
-
-import play.mvc.BodyParser;
+import models.applications.UserService;
+import models.domain.model.user.formvalue.UserRegistration;
+import models.utils.InjectorWrapper;
+import play.data.Form;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
+import views.html.users.confirmation;
+import views.html.users.input;
 
 public class UsersController extends Controller {
 
-	private static final AccountService accountService = new AccountService();
+	private static final UserService userService = InjectorWrapper.get(UserService.class);
 
-	public static Result get(final Long id) {
+	public static Result input(){
 
-		return execute(new Execution(){
-			@Override public ImmutablePair<Integer, ? extends JsonNode> invoke() throws Throwable {
-				return ImmutablePair.of(
-					OK,
-					accountService.obtainById(id).toJson()
-				);
-			}
-		});
+		Form<UserRegistration> registerForm = form(UserRegistration.class).fill(UserRegistration.defaultValue());
+
+		return ok(input.render(registerForm));
 	}
 
-	@BodyParser.Of(BodyParser.Json.class)
-	public static Result create() {
-		final JsonNode payload = request().body().asJson();
+	public static Result confirm(){
 
-		return execute(new Execution(){
-			@Override public ImmutablePair<Integer, ? extends JsonNode> invoke() throws Throwable {
+		Form<UserRegistration> registerForm = form(UserRegistration.class).bindFromRequest();
 
-				if(payload == null){
-					throw new ApplicationException(BAD_REQUEST, "requested content is not json");
-
-				}else if(payload.get("name").asText() == null){
-					throw new ApplicationException(BAD_REQUEST, "name undefined");
-
-				}else if(payload.get("password").asText() == null){
-					throw new ApplicationException(BAD_REQUEST, "password undefined");
-
-				}else{
-					return ImmutablePair.of(
-						CREATED,
-						accountService.create(payload.get("name").asText(), payload.get("password").asText()).toJson()
-					);
-				}
-			}
-		});
+		return ok(confirmation.render(registerForm));
 	}
 
-	@BodyParser.Of(BodyParser.Json.class)
-	public static Result update(final Long id) {
-		final JsonNode payload = request().body().asJson();
+	public static Result register(){
 
-		return execute(new Execution(){
-			@Override public ImmutablePair<Integer, ? extends JsonNode> invoke() throws Throwable {
+		Form<UserRegistration> registerForm = form(UserRegistration.class).bindFromRequest();
 
-				if(payload == null){
-					throw new ApplicationException(BAD_REQUEST, "requested content is not json");
+		userService.registerNewface(registerForm);
 
-				}else if(payload.get("name").asText() == null){
-					throw new ApplicationException(BAD_REQUEST, "name undefined");
-
-				}else{
-					return ImmutablePair.of(
-						CREATED,
-						accountService.modifyByJson(id, payload).toJson()
-					);
-				}
-			}
-		});
-	}
-
-	public static Result remove(final Long id) {
-		return execute(new Execution(){
-			@Override public ImmutablePair<Integer, ? extends JsonNode> invoke() throws Throwable {
-				accountService.removeAccount(id);
-				return ImmutablePair.of(
-					OK,
-					JsonNodeFactory.instance.objectNode()
-				);
-			}
-		});
-	}
-
-	private static Result execute(Execution execution){
-
-		ReturnableAsRestJsonResult result;
-		try {
-			final ImmutablePair<Integer, ? extends JsonNode> tupple = execution.invoke();
-			result = new ReturnableAsRestJsonResult() {
-				@Override public int getStatusCode() { return tupple.left; }
-				@Override public JsonNode toResultJson() { return tupple.right; }
-			};
-		} catch(ApplicationException e){
-			result = e;
-		} catch (Throwable e) {
-			result = new ApplicationException(Http.Status.INTERNAL_SERVER_ERROR, e.getMessage());
-		}
-
-		return status(result.getStatusCode(), result.toResultJson());
-	}
-
-	private static interface Execution {
-		public ImmutablePair<Integer, ? extends JsonNode> invoke() throws Throwable;
+		return ok(confirmation.render(registerForm));
 	}
 }

@@ -1,22 +1,22 @@
 package controllers.auth;
 
-import models.domain.user.AuthService;
-import models.domain.user.UnAuthorizedIdentityException;
+import models.applications.AuthService;
+import models.domain.model.auth.UnAuthorizedIdentityException;
+import models.domain.model.auth.formvalue.Login;
+import models.utils.InjectorWrapper;
 import models.utils.LoggedIn;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.auth.form.Login;
 
 public class AuthController extends Controller {
 
+	private static final AuthService authService = InjectorWrapper.get(AuthService.class);
+
 	public static Result login(){
 
-		Login defaultValue = new Login();
-		defaultValue.name = "";
-
-		Form<Login> loginForm = form(Login.class).fill(defaultValue);
+		Form<Login> loginForm = form(Login.class).fill(Login.defaultValue());
 
 		return ok(views.html.auth.login.render(loginForm));
 	}
@@ -32,11 +32,9 @@ public class AuthController extends Controller {
 
 			try {
 
-				Login formValue = loginForm.get();
+				authService.authenticate(loginForm, session());
 
-				new AuthService().authenticate(formValue.name, formValue.password, session());
-
-				return redirect(formValue.callback);
+				return redirect(loginForm.get().callback);
 
 			} catch (UnAuthorizedIdentityException e) {
 
@@ -49,7 +47,7 @@ public class AuthController extends Controller {
 	@LoggedIn
 	public static Result deauthenticate(){
 
-		new AuthService().deauthenticate(session());
+		authService.deauthenticate(session());
 
 		DynamicForm form = form().bindFromRequest();
 		String callback = form.get("callback");
@@ -61,8 +59,8 @@ public class AuthController extends Controller {
 	@LoggedIn
 	public static Result loggedin() throws UnAuthorizedIdentityException {
 
-		String name = new AuthService().getIdentity(session());
+		String identity = authService.getSessionOwner(session()).getIdentifier();
 
-		return ok(views.html.auth.loggedin.render(name));
+		return ok(views.html.auth.loggedin.render(identity));
 	}
 }
