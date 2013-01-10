@@ -7,10 +7,12 @@ import java.lang.annotation.Target;
 
 import models.applications.AuthService;
 import models.domain.model.auth.UnAuthorizedIdentityException;
+import play.Play;
 import play.mvc.Action;
 import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.With;
+import plugins.GuicePlugin;
 import controllers.routes;
 
 @With(LoggedIn.LoggedInAction.class)
@@ -20,7 +22,9 @@ public @interface LoggedIn {
 
 	static class LoggedInAction extends Action<LoggedIn>{
 
-		static final AuthService authService = InjectorWrapper.get(AuthService.class);
+		private final static GuicePlugin guice = Play.application().plugin(GuicePlugin.class);
+
+		static final AuthService authService = guice.get(AuthService.class);
 
 		@Override
 		public Result call(Context ctx) throws Throwable {

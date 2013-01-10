@@ -3,16 +3,19 @@ package controllers.auth;
 import models.applications.AuthService;
 import models.domain.model.auth.UnAuthorizedIdentityException;
 import models.domain.model.auth.formvalue.Login;
-import models.utils.InjectorWrapper;
 import models.utils.LoggedIn;
+import play.Play;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import plugins.GuicePlugin;
 
 public class AuthController extends Controller {
 
-	private static final AuthService authService = InjectorWrapper.get(AuthService.class);
+	private final static GuicePlugin guice = Play.application().plugin(GuicePlugin.class);
+
+	private final static AuthService authService = guice.get(AuthService.class);
 
 	public static Result login(){
 

@@ -2,16 +2,19 @@ package controllers.users;
 
 import models.applications.UserService;
 import models.domain.model.user.formvalue.UserRegistration;
-import models.utils.InjectorWrapper;
+import play.Play;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import plugins.GuicePlugin;
 import views.html.users.confirmation;
 import views.html.users.input;
 
 public class UsersController extends Controller {
 
-	private static final UserService userService = InjectorWrapper.get(UserService.class);
+	private final static GuicePlugin guice = Play.application().plugin(GuicePlugin.class);
+
+	private static final UserService userService = guice.get(UserService.class);
 
 	public static Result input(){
 
