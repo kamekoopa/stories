@@ -1,11 +1,13 @@
 package models.domain.model.auth;
 
+import models.exception.NotFoundException;
+
 
 public interface SessionRepository {
 
-	public void store(final SessionId sessId, final String identity);
+	public void store(final ServerSession serverSession);
 
-	public String get(final SessionId sessId);
+	public ServerSession get(final SessionId sessId) throws NotFoundException;
 
 	public void delete(final SessionId sessId);
 }

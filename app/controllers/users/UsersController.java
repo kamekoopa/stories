@@ -2,6 +2,7 @@ package controllers.users;
 
 import models.applications.UserService;
 import models.domain.model.user.formvalue.UserRegistration;
+import models.exception.DuplicateException;
 import play.Play;
 import play.data.Form;
 import play.mvc.Controller;
@@ -30,7 +31,7 @@ public class UsersController extends Controller {
 		return ok(confirmation.render(registerForm));
 	}
 
-	public static Result register(){
+	public static Result register() throws DuplicateException {
 
 		Form<UserRegistration> registerForm = form(UserRegistration.class).bindFromRequest();
 

@@ -1,95 +1,60 @@
 package models.applications;
 
 import models.domain.model.auth.AuthenticationInfo;
-import models.domain.model.auth.SessionId;
-import models.domain.model.auth.SessionRepository;
+import models.domain.model.auth.ClientSession;
+import models.domain.model.auth.SessionPersistentService;
+import models.domain.model.auth.SessionPersistentService.SessionPersistentServiceBuilder;
+import models.domain.model.auth.SessionRetrieveService;
+import models.domain.model.auth.SessionRetrieveService.SessionRetrieveServiceBuilder;
 import models.domain.model.auth.UnAuthorizedIdentityException;
 import models.domain.model.auth.formvalue.Login;
 import models.domain.model.user.User;
-import models.domain.model.user.UserNotFoundException;
-import models.domain.model.user.UserRepository;
-
-import org.apache.commons.lang3.StringUtils;
-
+import play.Play;
 import play.data.Form;
+import play.mvc.Http.Context;
 import play.mvc.Http.Session;
-
-import com.google.inject.Inject;
+import plugins.GuicePlugin;
 
 public class AuthService {
 
-	@Inject
-	private UserRepository userRepository;
+	private final SessionPersistentService sessionPersistentService;
 
-	@Inject
-	private SessionRepository sessionRepository;
+	private final SessionRetrieveService sessionRetrieveService;
 
-	public SessionId authenticate(final Form<Login> form, final Session sessionCookie) throws UnAuthorizedIdentityException {
+	private final ClientSession clientSession;
 
-		try{
 
-			AuthenticationInfo authInfo = form.get().getAuthInfo();
+	public AuthService(final Context ctx){
 
-			User user = this.userRepository.findByAuthenticationInfo(authInfo);
-			SessionId sessionId = new SessionId(user);
+		this.clientSession = ClientSession.get(ctx);
 
-			this.sessionRepository.store(sessionId, user.getIdentifier());
-			setSessionId(sessionCookie, sessionId);
+		SessionPersistentServiceBuilder pbuilder =
+			Play.application().plugin(GuicePlugin.class).get(SessionPersistentServiceBuilder.class);
+		this.sessionPersistentService = pbuilder.create(this.clientSession);
 
-			return sessionId;
-
-		}catch(UserNotFoundException e){
-			throw new UnAuthorizedIdentityException("invalid username or password");
-		}
+		SessionRetrieveServiceBuilder rbuilder =
+			Play.application().plugin(GuicePlugin.class).get(SessionRetrieveServiceBuilder.class);
+		this.sessionRetrieveService = rbuilder.create(this.clientSession);
 	}
 
-	public void deauthenticate(final Session session){
+	public void authenticate(final Form<Login> form, final Session sessionCookie) throws UnAuthorizedIdentityException {
 
-		SessionId sessId = sessionId(session);
-		this.sessionRepository.delete(sessId);
+		AuthenticationInfo authInfo = form.get().getAuthInfo();
+		this.sessionPersistentService.createSession(authInfo);
 	}
 
-	public User getSessionOwner(final Session session) throws UnAuthorizedIdentityException {
 
-		String identity = this.getIndentity(session);
-
-		try{
-			return this.userRepository.findByIdentity(identity);
-		}catch (UserNotFoundException e) {
-			throw new UnAuthorizedIdentityException("sessid that provide from client not exists in session store in server");
-		}
+	public void deauthenticate(){
+		this.sessionPersistentService.destroySession();
 	}
 
-	public User getSessionOwnerWithRegenerateSessionId(final Session session) throws UnAuthorizedIdentityException {
 
-		User user = this.getSessionOwner(session);
-
-		SessionId now = sessionId(session);
-		SessionId newer = new SessionId(user);
-
-		this.sessionRepository.store(newer, user.getIdentifier());
-		this.sessionRepository.delete(now);
-
-		setSessionId(session, newer);
-
-		return user;
+	public User getSessionOwner() throws UnAuthorizedIdentityException {
+		return this.sessionRetrieveService.getSessionOwner();
 	}
 
-	private String getIndentity(final Session session) throws UnAuthorizedIdentityException {
 
-		String identity = this.sessionRepository.get(sessionId(session));
-		if(StringUtils.isEmpty(identity)){
-			throw new UnAuthorizedIdentityException("sessid that provide from client not exists in session store in server");
-		}else{
-			return identity;
-		}
-	}
-
-	private static SessionId sessionId(final Session session){
-		return new SessionId(session.get("sessid"));
-	}
-
-	private static void setSessionId(final Session session, final SessionId sessionId){
-		session.put("sessid", sessionId.toString());
+	public User getSessionOwnerWithRegenerateSessionId() throws UnAuthorizedIdentityException {
+		return this.sessionRetrieveService.getSessionOwnerWithSessIdRegenerate();
 	}
 }

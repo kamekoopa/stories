@@ -41,6 +41,8 @@ public class GuicePlugin extends Plugin {
 
 				Logger.error("injectorの生成に失敗しました", e);
 				return false;
+			}catch(Throwable e){
+				throw e;
 			}
 		}
 	}

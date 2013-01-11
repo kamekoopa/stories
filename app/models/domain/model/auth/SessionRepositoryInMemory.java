@@ -1,20 +1,28 @@
 package models.domain.model.auth;
 
 import models.domain.model.OnMemoryCache;
+import models.domain.model.user.User;
+import models.exception.NotFoundException;
 
 public class SessionRepositoryInMemory implements SessionRepository {
 
 
 	@Override
-	public void store(final SessionId sessId, final String identity) {
+	public void store(final ServerSession session) {
 
-		OnMemoryCache.instance.set(sessId.toString(), identity);
+		String sessId = session.getIdentifier().toString();
+		String userIdentifier = session.getSessionOwner().getIdentifier();
+
+		OnMemoryCache.instance.set(sessId, userIdentifier);
 	}
 
 	@Override
-	public String get(SessionId sessId) {
+	public ServerSession get(SessionId sessId) throws NotFoundException {
 
-		return OnMemoryCache.instance.get(sessId.toString());
+		String userIdentifier = OnMemoryCache.instance.get(sessId.toString());
+		User user = User.Finder.findByIdentifier(userIdentifier);
+
+		return new ServerSession(sessId, user);
 	}
 
 	@Override

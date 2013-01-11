@@ -1,13 +1,18 @@
 package models.domain.model.user;
 
+import java.util.ArrayList;
+
 import models.domain.model.Entity;
-import models.orm.ebeans.Users;
+import models.domain.model.auth.AuthenticationInfo;
+import models.infra.ebean.entity.UserEbean;
 
 public class User extends Entity<String, User> {
 
-	private String username;
+	protected final UserEbean ebean;
 
-	private Password password;
+	protected User(final UserEbean ebean){
+		this.ebean = ebean;
+	}
 
 	@Override
 	public String getIdentifier() {
@@ -15,31 +20,57 @@ public class User extends Entity<String, User> {
 	}
 
 	public String getUsername(){
-		return this.username;
+		return this.ebean.name;
 	}
 
-	public Password getPassword(){
-		return this.password;
-	}
-
-	public static class Builder{
+	public static class Builder {
 
 		public static User newface(final String username, final String rawpassword){
 
-			User newface = new User();
-			newface.username = username;
-			newface.password = Password.fromRaw(rawpassword);
+			UserEbean newface = new UserEbean();
+			newface.name = username;
+			newface.pass = Password.fromRaw(rawpassword).toString();
+			newface.createdBoxes = new ArrayList<>();
+			newface.createdCards = new ArrayList<>();
 
-			return newface;
+			return new User(newface);
 		}
 
-		public static User fromOrmEntity(final Users users){
+		public static User fromEbean(final UserEbean ebean){
 
-			User user = new User();
-			user.username = users.name;
-			user.password = new Password(users.password);
-
-			return user;
+			return new User(ebean);
 		}
+	}
+
+	public static class Finder {
+
+		public static User findByAuthInfo(AuthenticationInfo authInfo) throws UserNotFoundException {
+
+			UserEbean ebean = UserEbean.find.where()
+				.eq("name"    , authInfo.username())
+				.eq("pass", authInfo.password().toString())
+				.findUnique();
+
+			return returnOrThrow(ebean);
+		}
+
+		public static User findByIdentifier(String identifier) throws UserNotFoundException {
+
+			UserEbean ebean = UserEbean.find.where()
+				.eq("name"    , identifier)
+				.findUnique();
+
+			return returnOrThrow(ebean);
+		}
+
+		private static User returnOrThrow(UserEbean ebean) throws UserNotFoundException {
+
+			if(ebean == null){
+				throw new UserNotFoundException();
+			}else{
+				return new User(ebean);
+			}
+		}
+
 	}
 }

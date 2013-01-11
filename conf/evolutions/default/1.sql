@@ -6,7 +6,7 @@
 CREATE TABLE users (
 	id         BIGINT     NOT NULL AUTO_INCREMENT,
 	name       VARCHAR   NOT NULL,
-	password   VARCHAR   NOT NULL,
+	pass       VARCHAR   NOT NULL,
 	created_at TIMESTAMP,
 	updated_at TIMESTAMP,
 	PRIMARY KEY (id),

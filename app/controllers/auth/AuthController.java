@@ -4,18 +4,13 @@ import models.applications.AuthService;
 import models.domain.model.auth.UnAuthorizedIdentityException;
 import models.domain.model.auth.formvalue.Login;
 import models.utils.LoggedIn;
-import play.Play;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
-import plugins.GuicePlugin;
 
 public class AuthController extends Controller {
-
-	private final static GuicePlugin guice = Play.application().plugin(GuicePlugin.class);
-
-	private final static AuthService authService = guice.get(AuthService.class);
 
 	public static Result login(){
 
@@ -35,7 +30,7 @@ public class AuthController extends Controller {
 
 			try {
 
-				authService.authenticate(loginForm, session());
+				new AuthService(Http.Context.current()).authenticate(loginForm, session());
 
 				return redirect(loginForm.get().callback);
 
@@ -50,7 +45,7 @@ public class AuthController extends Controller {
 	@LoggedIn
 	public static Result deauthenticate(){
 
-		authService.deauthenticate(session());
+		new AuthService(Http.Context.current()).deauthenticate();
 
 		DynamicForm form = form().bindFromRequest();
 		String callback = form.get("callback");
@@ -62,7 +57,7 @@ public class AuthController extends Controller {
 	@LoggedIn
 	public static Result loggedin() throws UnAuthorizedIdentityException {
 
-		String identity = authService.getSessionOwner(session()).getIdentifier();
+		String identity = new AuthService(Http.Context.current()).getSessionOwner().getIdentifier();
 
 		return ok(views.html.auth.loggedin.render(identity));
 	}

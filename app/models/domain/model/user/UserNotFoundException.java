@@ -1,19 +1,19 @@
 package models.domain.model.user;
 
-import models.exception.ApplicationException;
+import models.exception.NotFoundException;
 
-public class UserNotFoundException extends ApplicationException {
+public class UserNotFoundException extends NotFoundException {
 	private static final long serialVersionUID = -3773482728993624074L;
 
 	public UserNotFoundException() {
-		super(404, "user not found");
+		super("user not found");
 	}
 
 	public UserNotFoundException(Long id) {
-		super(404, "user not found [id: "+id+"]");
+		super("user not found [id: "+id+"]");
 	}
 
 	public UserNotFoundException(String name) {
-		super(404, "user not found [name: "+name+"]");
+		super("user not found [name: "+name+"]");
 	}
 }
