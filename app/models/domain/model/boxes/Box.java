@@ -2,52 +2,48 @@ package models.domain.model.boxes;
 
 import models.domain.model.Entity;
 import models.domain.model.user.User;
-import models.infra.ebean.entity.Boxes;
+import models.infra.ebean.entity.BoxEbean;
 
 public class Box extends Entity<Long, Box>{
 
-	private Long id;
+	protected final BoxEbean ebean;
 
-	private String boxName;
-
-	private User owner;
+	protected Box(final BoxEbean boxEbean){
+		this.ebean = boxEbean;
+	}
 
 	@Override
 	public Long getIdentifier() {
-		return this.id;
+		return this.ebean.id;
 	}
 
 	public String getBoxName(){
-		return this.boxName;
+		return this.ebean.name;
 	}
 
 	public User getOwner(){
-		return this.owner;
+		return User.Builder.fromEbean(this.ebean.createdBy);
+	}
+
+	public BoxEbean ebean(){
+		return this.ebean;
 	}
 
 
 	public static class Builder {
 
-		public static Box emptyBox(final User creator, final String boxName){
+		public static Box emptyBox(final String boxName){
 
-			Box emptyBox = new Box();
+			BoxEbean emptyBox = new BoxEbean();
 			emptyBox.id = null;
-			emptyBox.boxName = boxName;
-			emptyBox.owner = creator;
+			emptyBox.name = boxName;
 
-			return emptyBox;
+			return new Box(emptyBox);
 		}
 
-		public static Box fromOrmEntity(final Boxes boxes){
+		public static Box fromEbean(final BoxEbean ebean){
 
-			Box box = new Box();
-			box.id = boxes.id;
-			box.boxName = boxes.name;
-			//box.owner = User.Builder.fromOrmEntity(boxes.createdBy);
-
-			return box;
+			return new Box(ebean);
 		}
 	}
-
-
 }

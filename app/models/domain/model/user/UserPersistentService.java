@@ -23,4 +23,8 @@ public class UserPersistentService {
 			ExceptionConverter.convertAndThrow(e);
 		}
 	}
+
+	public void update(User user){
+		user.ebean.update();
+	}
 }

@@ -1,16 +1,22 @@
 package models.domain.model.boxes.formvalue;
 
 import models.domain.model.boxes.Box;
-import models.domain.model.user.User;
 
 public class BoxCreation {
 
 
 	public String boxName;
 
+	public static BoxCreation defaultValue(){
 
-	public Box newBox(final User creator){
+		BoxCreation defaultValue = new BoxCreation();
+		defaultValue.boxName = "ボックス";
 
-		return Box.Builder.emptyBox(creator, this.boxName);
+		return defaultValue;
+	}
+
+	public Box newBox(){
+
+		return Box.Builder.emptyBox(this.boxName);
 	}
 }

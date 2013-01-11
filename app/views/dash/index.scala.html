@@ -1,0 +1,42 @@
+@(form:play.data.Form[models.domain.model.boxes.formvalue.BoxCreation])
+@main(title = "メイン") {
+
+	<div class="container-fluid">
+		<div class="row-fluid" style="text-align: center;">
+		
+			<h1 class="span4 offset4">メイン</h1>
+			
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+	
+		<div class="row-fluid">
+			
+			<div class="span4 offset4">
+			
+				@if(form.hasErrors) {
+					@for(entry <- form.errors.entrySet){
+						@for(validationError <- entry.getValue){
+						<div class="alert alert-error">
+							<button type="button" class="close" data-dismiss="alert">&times;</button>
+							@validationError.key : @Messages(validationError.message, validationError.arguments)
+						</div>
+						}
+					}
+				}
+			
+				<form method="POST" action="/box/registry" enctype="application/x-www-form-urlencoded">
+					<fieldset>
+					
+						<label>ボックス名</label>
+						<input id="boxName" class="input-block-level"
+							type="text" name="boxName" value="@form.value().get().boxName" />
+						
+						<div style="text-align: center;"><button type="submit" class="btn btn-success btn-large" >作成</button></div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+}

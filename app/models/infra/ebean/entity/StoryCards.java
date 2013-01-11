@@ -26,7 +26,7 @@ public class StoryCards extends Model {
 
 	@Constraints.Required
 	@ManyToOne(cascade = CascadeType.ALL)
-	public Boxes box;
+	public BoxEbean box;
 
 	@Constraints.Required
 	@ManyToOne

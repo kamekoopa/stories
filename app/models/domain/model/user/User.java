@@ -1,9 +1,12 @@
 package models.domain.model.user;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import models.domain.model.Entity;
 import models.domain.model.auth.AuthenticationInfo;
+import models.domain.model.boxes.Box;
+import models.infra.ebean.entity.BoxEbean;
 import models.infra.ebean.entity.UserEbean;
 
 public class User extends Entity<String, User> {
@@ -21,6 +24,23 @@ public class User extends Entity<String, User> {
 
 	public String getUsername(){
 		return this.ebean.name;
+	}
+
+	public User addBox(Box box){
+
+		this.ebean.createdBoxes.add(box.ebean());
+
+		return this;
+	}
+
+	public List<Box> getMyBoxes(){
+
+		List<Box> boxes = new ArrayList<>();
+		for(BoxEbean boxEbean : this.ebean.createdBoxes){
+			boxes.add(Box.Builder.fromEbean(boxEbean));
+		}
+
+		return boxes;
 	}
 
 	public static class Builder {

@@ -9,8 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Version;
 
 import play.data.validation.Constraints;
@@ -19,7 +21,8 @@ import play.db.ebean.Model;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 
 @Entity
-public class Boxes extends Model {
+@Table(name = "boxes")
+public class BoxEbean extends Model {
 	private static final long serialVersionUID = 6319698219575254275L;
 
 	@Id
@@ -27,7 +30,8 @@ public class Boxes extends Model {
 	public Long id;
 	@Constraints.Required
 
-	@ManyToOne
+	@ManyToOne(targetEntity = UserEbean.class)
+	@JoinColumn(name="created_by_id", referencedColumnName = "id")
 	public UserEbean createdBy;
 
 	@OneToMany(cascade = CascadeType.ALL)
@@ -42,5 +46,5 @@ public class Boxes extends Model {
 	@Version
 	public Timestamp updatedAt;
 
-	public static Finder<Long, Boxes> find = new Finder<>(Long.class, Boxes.class);
+	public static Finder<Long, BoxEbean> find = new Finder<>(Long.class, BoxEbean.class);
 }
