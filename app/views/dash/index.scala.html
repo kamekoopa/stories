@@ -2,6 +2,23 @@
 
 @main(title = "メイン") {
 
+	<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="brand pull-left" href="/dash">メイン画面</a>
+				<ul class="nav pull-right">
+					<li class="divider-vertical"></li>
+					<li>
+						<form class="navbar-form" method="POST" action="/auth/deauthentication">
+							<input type="hidden" name="callback" value="/login" />
+							<button class="btn btn-link" type="submit">ログアウト</button>
+						</form>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
 	<div class="container-fluid">
 		<div class="row-fluid" style="text-align: center;">
 		
