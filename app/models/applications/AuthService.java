@@ -12,7 +12,6 @@ import models.domain.model.user.User;
 import play.Play;
 import play.data.Form;
 import play.mvc.Http.Context;
-import play.mvc.Http.Session;
 import plugins.GuicePlugin;
 
 public class AuthService {
@@ -37,7 +36,7 @@ public class AuthService {
 		this.sessionRetrieveService = rbuilder.create(this.clientSession);
 	}
 
-	public void authenticate(final Form<Login> form, final Session sessionCookie) throws UnAuthorizedIdentityException {
+	public void authenticate(final Form<Login> form) throws UnAuthorizedIdentityException {
 
 		AuthenticationInfo authInfo = form.get().getAuthInfo();
 		this.sessionPersistentService.createSession(authInfo);

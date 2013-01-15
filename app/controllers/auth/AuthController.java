@@ -30,7 +30,7 @@ public class AuthController extends Controller {
 
 			try {
 
-				new AuthService(Http.Context.current()).authenticate(loginForm, session());
+				new AuthService(Http.Context.current()).authenticate(loginForm);
 
 				return redirect(loginForm.get().callback);
 
@@ -49,16 +49,8 @@ public class AuthController extends Controller {
 
 		DynamicForm form = form().bindFromRequest();
 		String callback = form.get("callback");
-		callback = callback == null ? "/" : callback;
+		callback = callback == null ? controllers.auth.routes.AuthController.login().url() : callback;
 
 		return redirect(callback);
-	}
-
-	@LoggedIn
-	public static Result loggedin() throws UnAuthorizedIdentityException {
-
-		String identity = new AuthService(Http.Context.current()).getSessionOwner().getIdentifier();
-
-		return ok(views.html.auth.loggedin.render(identity));
 	}
 }

@@ -28,4 +28,14 @@ public class Login {
 
 		return def;
 	}
+
+	public static Login set(final String name, final String password, final String callback){
+
+		Login login = new Login();
+		login.name = name;
+		login.password = password;
+		login.callback = callback;
+
+		return login;
+	}
 }

@@ -8,8 +8,7 @@ GET     /                           controllers.Application.index()
 
 # authorization / authentication
 
-GET     /auth/login                 controllers.auth.AuthController.login()
-GET     /auth/loggedin              controllers.auth.AuthController.loggedin()
+GET     /login                      controllers.auth.AuthController.login()
 
 POST    /auth/authentication        controllers.auth.AuthController.authenticate()
 POST    /auth/deauthentication      controllers.auth.AuthController.deauthenticate()
@@ -24,9 +23,9 @@ POST    /users/new/registry         controllers.users.UsersController.register()
 
 # main screen
 
-GET     /main                       controllers.dash.MainController.index()
+GET     /dash                       controllers.dash.MainController.index()
 
-POST    /box/registry               controllers.dash.MainController.createBox()
+POST    /boxes/registry             controllers.dash.MainController.createBox()
 
 
 # Map static resources from the /public folder to the /assets URL path

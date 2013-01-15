@@ -11,7 +11,7 @@ import play.mvc.Action;
 import play.mvc.Http.Context;
 import play.mvc.Result;
 import play.mvc.With;
-import controllers.routes;
+import controllers.auth.routes;
 
 @With(LoggedIn.LoggedInAction.class)
 @Target({ElementType.TYPE, ElementType.METHOD})
@@ -30,7 +30,7 @@ public @interface LoggedIn {
 				return this.delegate.call(ctx);
 
 			} catch (UnAuthorizedIdentityException e) {
-				return redirect(routes.Application.index());
+				return redirect(routes.AuthController.login());
 			}
 		}
 	}
