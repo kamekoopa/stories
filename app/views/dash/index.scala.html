@@ -1,4 +1,4 @@
-@(form:play.data.Form[models.domain.model.boxes.formvalue.BoxCreation])(boxes:List[models.domain.model.boxes.Box])
+@(form:play.data.Form[models.domain.model.boxes.formvalue.BoxCreation])(boxes:models.domain.model.boxes.BoxList)
 
 @main(title = "メイン") {
 
@@ -42,7 +42,7 @@
 	
 		<div class="row-fluid">
 		
-			@for(box <- boxes){
+			@for(box <- boxes.iterator()){
 			<div class="well">
 				<label>@box.getBoxName()</label>
 			</div>

@@ -1,11 +1,9 @@
 package controllers.dash;
 
-import java.util.List;
-
 import models.applications.AuthService;
 import models.applications.UserService;
 import models.domain.model.auth.UnAuthorizedIdentityException;
-import models.domain.model.boxes.Box;
+import models.domain.model.boxes.BoxList;
 import models.domain.model.boxes.formvalue.BoxCreation;
 import models.domain.model.user.User;
 import models.exception.NotFoundException;
@@ -23,7 +21,7 @@ public class MainController extends Controller {
 		Form<BoxCreation> form = form(BoxCreation.class).fill(BoxCreation.defaultValue());
 
 		User viewer = new AuthService(Http.Context.current()).getSessionOwner();
-		List<Box> boxes = viewer.getMyBoxes();
+		BoxList boxes = viewer.getMyBoxes();
 
 		return ok(views.html.dash.index.render(form, boxes));
 	}

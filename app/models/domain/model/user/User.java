@@ -1,20 +1,22 @@
 package models.domain.model.user;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import models.domain.model.Entity;
 import models.domain.model.auth.AuthenticationInfo;
 import models.domain.model.boxes.Box;
-import models.infra.ebean.entity.BoxEbean;
+import models.domain.model.boxes.BoxList;
 import models.infra.ebean.entity.UserEbean;
 
 public class User extends Entity<String, User> {
 
 	protected final UserEbean ebean;
 
+	protected final BoxList createdBoxList;
+
 	protected User(final UserEbean ebean){
 		this.ebean = ebean;
+		this.createdBoxList = new BoxList(this.ebean.createdBoxes);
 	}
 
 	@Override
@@ -28,19 +30,14 @@ public class User extends Entity<String, User> {
 
 	public User addBox(Box box){
 
-		this.ebean.createdBoxes.add(box.ebean());
+		this.createdBoxList.add(box);
 
 		return this;
 	}
 
-	public List<Box> getMyBoxes(){
+	public BoxList getMyBoxes(){
 
-		List<Box> boxes = new ArrayList<>();
-		for(BoxEbean boxEbean : this.ebean.createdBoxes){
-			boxes.add(Box.Builder.fromEbean(boxEbean));
-		}
-
-		return boxes;
+		return this.createdBoxList;
 	}
 
 	public static class Builder {
