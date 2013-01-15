@@ -22,7 +22,10 @@ public class MainController extends Controller {
 
 		Form<BoxCreation> form = form(BoxCreation.class).fill(BoxCreation.defaultValue());
 
-		return ok(views.html.dash.index.render(form));
+		User viewer = new AuthService(Http.Context.current()).getSessionOwner();
+		List<Box> boxes = viewer.getMyBoxes();
+
+		return ok(views.html.dash.index.render(form, boxes));
 	}
 
 	@LoggedIn
@@ -33,8 +36,6 @@ public class MainController extends Controller {
 		User viewer = new AuthService(Http.Context.current()).getSessionOwner();
 		new UserService().addNewBox(viewer.getIdentifier(), newBoxForm);
 
-		List<Box> boxes = viewer.getMyBoxes();
-
-		return redirect("/main");
+		return redirect(controllers.dash.routes.MainController.index());
 	}
 }

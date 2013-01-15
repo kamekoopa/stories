@@ -1,4 +1,5 @@
-@(form:play.data.Form[models.domain.model.boxes.formvalue.BoxCreation])
+@(form:play.data.Form[models.domain.model.boxes.formvalue.BoxCreation])(boxes:List[models.domain.model.boxes.Box])
+
 @main(title = "メイン") {
 
 	<div class="container-fluid">
@@ -26,7 +27,7 @@
 					}
 				}
 			
-				<form method="POST" action="/box/registry" enctype="application/x-www-form-urlencoded">
+				<form method="POST" action="/boxes/registry" enctype="application/x-www-form-urlencoded">
 					<fieldset>
 					
 						<label>ボックス名</label>
@@ -37,6 +38,15 @@
 					</fieldset>
 				</form>
 			</div>
+		</div>
+	
+		<div class="row-fluid">
+		
+			@for(box <- boxes){
+			<div class="well">
+				<label>@box.getBoxName()</label>
+			</div>
+			}
 		</div>
 	</div>
 }
