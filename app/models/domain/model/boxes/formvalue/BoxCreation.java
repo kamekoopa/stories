@@ -10,7 +10,7 @@ public class BoxCreation {
 	public static BoxCreation defaultValue(){
 
 		BoxCreation defaultValue = new BoxCreation();
-		defaultValue.boxName = "ボックス";
+		defaultValue.boxName = "";
 
 		return defaultValue;
 	}

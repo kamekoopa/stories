@@ -8,12 +8,16 @@ import play.data.Form;
 
 public class CardService {
 
-	public void finishStory(Form<CardFinish> form) throws NotFoundException {
+	public void changeDoneState(Form<CardFinish> form) throws NotFoundException {
 
 		CardFinish cardFinish = form.get();
 
 		Card card = Card.Finder.findByIdentifier(cardFinish.cardId);
-		card.done();
+		if(cardFinish.done){
+			card.done();
+		}else{
+			card.notDone();
+		}
 
 		new CardPersistentService().update(card);
 	}

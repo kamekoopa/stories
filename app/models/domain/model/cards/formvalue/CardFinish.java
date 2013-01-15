@@ -9,4 +9,7 @@ public class CardFinish {
 	@Required
 	@NumberFormat
 	public Long cardId;
+	
+	@Required
+	public boolean done;
 }

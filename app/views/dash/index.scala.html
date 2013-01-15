@@ -20,18 +20,10 @@
 	</div>
 
 	<div class="container-fluid">
-		<div class="row-fluid" style="text-align: center;">
-		
-			<h1 class="span4 offset4">メイン</h1>
-			
-		</div>
-	</div>
-	
-	<div class="container-fluid">
 	
 		<div class="row-fluid">
 			
-			<div class="span4 offset4">
+			<div class="well">
 			
 				@if(form.hasErrors) {
 					@for(entry <- form.errors.entrySet){
@@ -44,15 +36,10 @@
 					}
 				}
 			
-				<form method="POST" action="/boxes/registry" enctype="application/x-www-form-urlencoded">
-					<fieldset>
-					
-						<label>ボックス名</label>
-						<input id="boxName" class="input-block-level"
-							type="text" name="boxName" value="@form.value().get().boxName" />
-						
-						<div style="text-align: center;"><button type="submit" class="btn btn-success btn-large" >作成</button></div>
-					</fieldset>
+				<form class="form-inline" style="margin: 0px;" method="POST" action="/boxes/registry" enctype="application/x-www-form-urlencoded">
+					<label>ボックス作成</label>
+					<input type="text" name="boxName" value="@form.value().get().boxName" placeholder="作成するボックス名"/>
+					<button type="submit" class="btn btn-success" >作成</button>
 				</form>
 			</div>
 		</div>
@@ -89,7 +76,14 @@
 						@if(!card.isDone()){
 							<form style="margin:0px;" method="POST" action="/cards/finished" enctype="application/x-www-form-urlencoded">
 								<input type="hidden" name="cardId" value="@card.getIdentifier()" />
+								<input type="hidden" name="done"   value="true" />
 								<button type="submit" class="btn btn-success">Done</button>
+							</form>
+						} else{
+							<form style="margin:0px;" method="POST" action="/cards/finished" enctype="application/x-www-form-urlencoded">
+								<input type="hidden" name="cardId" value="@card.getIdentifier()" />
+								<input type="hidden" name="done"   value="false" />
+								<button type="submit" class="btn btn-inverse">未完にする</button>
 							</form>
 						}
 						</td>
@@ -97,9 +91,13 @@
 					}
 				</table>
 				}
-				<p style="text-align:right;">
-					Completed / Total : @box.getCompletedPoint() / @box.getTotalPoint()
-				</p>
+				
+				@defining(box.getCompletedPoint().toDouble / box.getTotalPoint().toDouble * 100){ percent =>
+				<label>やり遂げ具合 @percent.toInt % (@box.getCompletedPoint() / @box.getTotalPoint())</label>
+				<div class="progress">
+					<div class="bar" style="width: @percent%;"></div>
+				</div>
+				}
 			</div>
 			}
 		</div>

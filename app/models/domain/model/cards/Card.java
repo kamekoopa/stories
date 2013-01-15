@@ -39,6 +39,11 @@ public class Card extends Entity<Long, Card>{
 		return this;
 	}
 
+	public Card notDone(){
+		this.ebean.done = false;
+		return this;
+	}
+	
 	public static class Builder {
 
 		public static Card newCard(final User creator, final String front, final String back, final Integer points){

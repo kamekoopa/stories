@@ -55,7 +55,7 @@ public class MainController extends Controller {
 	public static Result finishCard() throws NotFoundException {
 
 		Form<CardFinish> finishForm = form(CardFinish.class).bindFromRequest();
-		new CardService().finishStory(finishForm);
+		new CardService().changeDoneState(finishForm);
 
 		return redirect(controllers.dash.routes.MainController.index());
 	}
