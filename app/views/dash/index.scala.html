@@ -48,7 +48,7 @@
 		
 			@for(box <- boxes.iterator()){
 			<div class="well">
-				<label>@box.getBoxName()</label>
+				<h4>@box.getBoxName()</h4>
 				<form class="form-inline" method="POST" action="/cards/registry" enctype="application/x-www-form-urlencoded">
 					<input type="hidden" name="boxId" value="@box.getIdentifier()" />
 					<input type="text"   name="front"  value="" placeholder="やること" />
