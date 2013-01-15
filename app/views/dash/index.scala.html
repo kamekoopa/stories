@@ -68,7 +68,7 @@
 					</thead>
 
 					@for(card <- box.iterator()){
-					<tr>
+					<tr @if(card.isDone()){class="muted"}>
 						<td>@if(card.isDone()){<del>}@card.getFront()@if(card.isDone()){</del>}</td>
 						<td>@if(card.isDone()){<del>}@card.getBack()@if(card.isDone()){</del>}</td>
 						<td>@if(card.isDone()){<del>}@card.getPoints()@if(card.isDone()){</del>}</td>
