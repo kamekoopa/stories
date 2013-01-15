@@ -26,6 +26,8 @@ POST    /users/new/registry         controllers.users.UsersController.register()
 GET     /dash                       controllers.dash.MainController.index()
 
 POST    /boxes/registry             controllers.dash.MainController.createBox()
+POST    /cards/registry             controllers.dash.MainController.createCard()
+POST    /cards/finished             controllers.dash.MainController.finishCard()
 
 
 # Map static resources from the /public folder to the /assets URL path

@@ -40,6 +40,10 @@ public class User extends Entity<String, User> {
 		return this.createdBoxList;
 	}
 
+	public UserEbean ebean(){
+		return this.ebean;
+	}
+
 	public static class Builder {
 
 		public static User newface(final String username, final String rawpassword){

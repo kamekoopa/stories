@@ -2,12 +2,13 @@ package models.infra.ebean.entity;
 
 import java.sql.Timestamp;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Version;
 
 import play.data.validation.Constraints;
@@ -16,7 +17,8 @@ import play.db.ebean.Model;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 
 @Entity
-public class StoryCards extends Model {
+@Table(name="story_cards")
+public class StoryCardEbean extends Model {
 	private static final long serialVersionUID = -7623805467922298373L;
 
 
@@ -25,7 +27,8 @@ public class StoryCards extends Model {
 	public Long id;
 
 	@Constraints.Required
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(targetEntity = BoxEbean.class)
+	@JoinColumn(name="box_id", referencedColumnName = "id")
 	public BoxEbean box;
 
 	@Constraints.Required
@@ -50,5 +53,5 @@ public class StoryCards extends Model {
 	@Version
 	public Timestamp updatedAt;
 
-	public static Finder<Long, StoryCards> find = new Finder<>(Long.class, StoryCards.class);
+	public static Finder<Long, StoryCardEbean> find = new Finder<>(Long.class, StoryCardEbean.class);
 }

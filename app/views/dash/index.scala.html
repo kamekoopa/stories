@@ -45,6 +45,44 @@
 			@for(box <- boxes.iterator()){
 			<div class="well">
 				<label>@box.getBoxName()</label>
+				<form class="form-inline" method="POST" action="/cards/registry" enctype="application/x-www-form-urlencoded">
+					<input type="hidden" name="boxId" value="@box.getIdentifier()" />
+					<input type="text"   name="front"  value="" placeholder="やること" />
+					<input type="text"   name="back"   value="" placeholder="完了条件" />
+					<input type="text"   name="points" value="" placeholder="ポイント" />
+					<button type="submit" class="btn btn-success">登録</button>
+				</form>
+				@if(!box.isEmpty()){
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>タスク</th>
+							<th>完了条件</th>
+							<th>ポイント</th>
+							<th>&nbsp;</th>
+						</tr>
+					</thead>
+
+					@for(card <- box.iterator()){
+					<tr>
+						<td>@if(card.isDone()){<del>}@card.getFront()@if(card.isDone()){</del>}</td>
+						<td>@if(card.isDone()){<del>}@card.getBack()@if(card.isDone()){</del>}</td>
+						<td>@if(card.isDone()){<del>}@card.getPoints()@if(card.isDone()){</del>}</td>
+						<td style="text-align: right;">
+						@if(!card.isDone()){
+							<form style="margin:0px;" method="POST" action="/cards/finished" enctype="application/x-www-form-urlencoded">
+								<input type="hidden" name="cardId" value="@card.getIdentifier()" />
+								<button type="submit" class="btn btn-success">Done</button>
+							</form>
+						}
+						</td>
+					</tr>
+					}
+				</table>
+				}
+				<p style="text-align:right;">
+					Completed / Total : @box.getCompletedPoint() / @box.getTotalPoint()
+				</p>
 			</div>
 			}
 		</div>

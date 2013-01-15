@@ -34,8 +34,8 @@ public class BoxEbean extends Model {
 	@JoinColumn(name="created_by_id", referencedColumnName = "id")
 	public UserEbean createdBy;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	public List<StoryCards> stories = new ArrayList<>();
+	@OneToMany(targetEntity = StoryCardEbean.class, mappedBy = "box", cascade = CascadeType.ALL)
+	public List<StoryCardEbean> stories = new ArrayList<>();
 
 	@Constraints.Required
 	public String name;

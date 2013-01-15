@@ -37,7 +37,7 @@ public class UserEbean extends Model {
 	public List<BoxEbean> createdBoxes = new ArrayList<>();
 
 	@OneToMany
-	public List<StoryCards> createdCards = new ArrayList<>();
+	public List<StoryCardEbean> createdCards = new ArrayList<>();
 
 	@CreatedTimestamp
 	public Timestamp createdAt;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import models.exception.NotFoundException;
 import models.infra.ebean.entity.BoxEbean;
 
 public class BoxList implements Iterable<Box> {
@@ -18,6 +19,17 @@ public class BoxList implements Iterable<Box> {
 		this.internalCollection.add(box.ebean);
 
 		return this;
+	}
+
+	public Box get(Long identifier) throws NotFoundException {
+
+		for(BoxEbean ebean : this.internalCollection){
+			if(ebean.id.equals(identifier)){
+				return Box.Builder.fromEbean(ebean);
+			}
+		}
+
+		throw new NotFoundException(identifier);
 	}
 
 	@Override
