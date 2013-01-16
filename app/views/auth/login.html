@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout"
+	lang="ja">
+	<head>
+		<title>ログイン</title>
+	</head>
+	<body>
+		<section layout:fragment="content">
+
+			<div class="container-fluid">
+				<div class="row-fluid" style="text-align: center;">
+				
+					<h1 class="span4 offset4">Stories</h1>
+					
+				</div>
+			</div>
+			
+			<div class="container-fluid">
+			
+				<div class="row-fluid">
+					
+					<div class="well span4 offset4">
+					
+						<div class="alert alert-error" th:if="${errors.size() != 0}" th:each="error: ${errors}" th:object="${error}">
+							<button type="button" class="close" data-dismiss="alert">&times;</button>
+							<span th:text="*{getKey() + ': ' + getMessage()}">エラー: メッセージ</span>
+						</div>
+					
+						<form method="POST" action="/auth/authentication" enctype="application/x-www-form-urlencoded" th:object="${form.data()}">
+							
+							<input name="callback" type="hidden" value="/dash" />
+							
+							<input id="username" class="input-block-level" type="text" name="name" value="" placeholder="username" th:attr="value=*{get('name')}"/>
+							
+							<input id="password" class="input-block-level" type="password" name="password" value="" placeholder="password" th:attr="value=*{get('password')}"/>
+							
+							<div style="text-align: center;"><button type="submit" class="btn btn-primary btn-large" >ログイン</button></div>
+						</form>
+					</div>
+				</div>
+				
+				<div class="row-fluid">
+					
+					<div class="span4 offset4" style="text-align: right;">
+						<a href="/users/new/input">ユーザ作成</a>
+					</div>
+				</div>
+			</div>
+			
+		</section>
+	</body>
+</html>

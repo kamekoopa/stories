@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout"
+	lang="ja">
+	<head>
+		<title>確認</title>
+	</head>
+	<body>
+		<section layout:fragment="content">
+		
+			<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<a class="brand pull-left" href="/dash">メイン画面</a>
+						<ul class="nav pull-right">
+							<li class="divider-vertical"></li>
+							<li>
+								<form class="navbar-form" method="POST" action="/auth/deauthentication">
+									<input type="hidden" name="callback" value="/login" />
+									<button class="btn btn-link" type="submit">ログアウト</button>
+								</form>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		
+			<div class="container-fluid">
+			
+				<div class="row-fluid">
+					
+					<div class="well">
+					
+						<div class="alert alert-error" th:if="${errors.size() != 0}" th:each="error: ${errors}" th:object="${error}">
+							<button type="button" class="close" data-dismiss="alert">&times;</button>
+							<span th:text="*{getKey() + ': ' + getMessage()}">エラー: メッセージ</span>
+						</div>
+					
+						<form class="form-inline" style="margin: 0px;"
+							method="POST" action="/boxes/registry" enctype="application/x-www-form-urlencoded" th:object="${form.value().get()}">
+							
+							<label>ボックス作成</label>
+							<input type="text" name="boxName" value="" placeholder="作成するボックス名" th:attr="value=*{boxName}"/>
+							<button type="submit" class="btn btn-success" >作成</button>
+						</form>
+					</div>
+				</div>
+			
+				<div class="row-fluid">
+				
+					<div class="well" th:each="box: ${boxes}" th:object="${box}">
+					
+						<h4 th:text="*{getBoxName()}">ボックス名</h4>
+						<form class="form-inline" method="POST" action="/cards/registry" enctype="application/x-www-form-urlencoded">
+							<input type="hidden" name="boxId" value="" th:attr="value=*{getIdentifier()}"/>
+							<input type="text"   name="front"  value="" placeholder="やること" />
+							<input type="text"   name="back"   value="" placeholder="完了条件" />
+							<input type="text"   name="points" value="" placeholder="ポイント" />
+							<button type="submit" class="btn btn-success">登録</button>
+						</form>
+						
+						<table class="table table-striped" th:unless="*{isEmpty()}">
+							<thead>
+								<tr>
+									<th>タスク</th>
+									<th>完了条件</th>
+									<th>ポイント</th>
+									<th>&nbsp;</th>
+								</tr>
+							</thead>
+		
+							<tr th:each="card: ${box}" th:classappend="${card.isDone()}? 'muted'" th:attr="style=${card.isDone()}? 'text-decoration: line-through;'">
+								<td th:text="${card.getFront()}" >やること</td>
+								<td th:text="${card.getBack()}">完了条件</td>
+								<td th:text="${card.getPoints() + ' pt'}">10 pt</td>
+								<td style="text-align: right;">
+
+									<form style="margin:0px;" method="POST" action="/cards/finished" enctype="application/x-www-form-urlencoded" th:unless="${card.isDone()}">
+										<input type="hidden" name="cardId" value="" th:attr="value=${card.getIdentifier()}"/>
+										<input type="hidden" name="done"   value="true" />
+										<button type="submit" class="btn btn-success">Done</button>
+									</form>
+
+									<form style="margin:0px;" method="POST" action="/cards/finished" enctype="application/x-www-form-urlencoded" th:if="${card.isDone()}">
+										<input type="hidden" name="cardId" value="" th:attr="value=${card.getIdentifier()}"/>
+										<input type="hidden" name="done"   value="false" />
+										<button type="submit" class="btn btn-inverse">未完にする</button>
+									</form>
+
+								</td>
+							</tr>
+						</table>
+						
+						<label>
+							やり遂げ具合 <span th:text="*{getPercentageOfProgress()}">50</span> % (<span th:text="*{getCompletedPoint()}">50</span> / <span th:text="*{getTotalPoint()}">100</span>)
+						</label>
+						<div class="progress">
+							<div class="bar" style="width: 50%;" th:attr="style='width: '+ *{getPercentageOfProgress()} + '%;'"></div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</section>
+	</body>
+</html>

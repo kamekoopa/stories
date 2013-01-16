@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout"
+	lang="ja">
+	<head>
+		<title>確認</title>
+	</head>
+	<body>
+		<section layout:fragment="content">
+			<div class="container-fluid">
+				<div class="row-fluid" style="text-align: center;">
+				
+					<h3 class="span4 offset4">内容を確認してください</h3>
+					
+				</div>
+			</div>
+			
+			<div class="container-fluid">
+			
+				<div class="row-fluid">
+					
+					<div class="span4 offset4" th:object="${form.data()}">
+						
+						<dl class="dl-horizontal">
+							<dt>ユーザ名</dt><dd th:text="*{get('username')}">ほげ太郎</dd>
+						</dl>
+						
+						<form method="POST" action="/users/new/registry" enctype="application/x-www-form-urlencoded">
+							<input
+								type="hidden" name="username" value="" placeholder="半角英数字" th:attr="value=*{get('username')}"/>
+							
+							<input
+								type="hidden" name="password" value="" placeholder="半角英数字" th:attr="value=*{get('password')}"/>
+							
+							<div style="text-align: center;"><button type="submit" class="btn btn-success btn-large" >作成</button></div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</section>
+	</body>
+</html>

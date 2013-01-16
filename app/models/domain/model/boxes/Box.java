@@ -1,5 +1,6 @@
 package models.domain.model.boxes;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 
 import models.domain.model.Entity;
@@ -57,6 +58,18 @@ public class Box extends Entity<Long, Box> implements Iterable<Card> {
 
 	public Integer getIncompletedPoint(){
 		return this.cardList.getIncompletedPoint();
+	}
+
+	public Integer getPercentageOfProgress(){
+
+		BigDecimal percent;
+		if(this.getTotalPoint().intValue() != 0){
+			percent = BigDecimal.valueOf( (this.getCompletedPoint().doubleValue() / this.getTotalPoint().doubleValue()) * 100.0 );
+		}else{
+			percent = BigDecimal.valueOf(0.0);
+		}
+
+		return Integer.valueOf(percent.setScale(0, BigDecimal.ROUND_HALF_UP).intValue());
 	}
 
 	@Override

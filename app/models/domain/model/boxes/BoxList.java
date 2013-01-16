@@ -32,6 +32,10 @@ public class BoxList implements Iterable<Box> {
 		throw new NotFoundException(identifier);
 	}
 
+	public boolean isEmpty(){
+		return this.internalCollection.isEmpty();
+	}
+
 	@Override
 	public Iterator<Box> iterator() {
 		return this.toDomainList().iterator();

@@ -1,5 +1,11 @@
 package controllers.dash;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import models.applications.AuthService;
 import models.applications.CardService;
 import models.applications.UserService;
@@ -12,9 +18,11 @@ import models.domain.model.user.User;
 import models.exception.NotFoundException;
 import models.utils.LoggedIn;
 import play.data.Form;
+import play.data.validation.ValidationError;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import plugins.ThymeleafPlugin;
 
 public class MainController extends Controller {
 
@@ -26,7 +34,17 @@ public class MainController extends Controller {
 		User viewer = new AuthService(Http.Context.current()).getSessionOwner();
 		BoxList boxes = viewer.getMyBoxes();
 
-		return ok(views.html.dash.index.render(form, boxes));
+		List<ValidationError> errors = new ArrayList<>();
+		for (Entry<String, List<ValidationError>> entry : form.errors().entrySet() ){
+			errors.addAll(entry.getValue());
+		}
+
+		Map<String, Object> vars = new HashMap<>();
+		vars.put("form", form);
+		vars.put("errors", errors);
+		vars.put("boxes", boxes);
+
+		return ThymeleafPlugin.ok("dash/index", vars);
 	}
 
 	@LoggedIn

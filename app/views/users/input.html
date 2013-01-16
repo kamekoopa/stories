@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="layout"
+	lang="ja">
+	<head>
+		<title>ログイン</title>
+	</head>
+	<body>
+		<section layout:fragment="content">
+
+			<div class="container-fluid">
+				<div class="row-fluid" style="text-align: center;">
+				
+					<h1 class="span4 offset4">ユーザ作成</h1>
+					
+				</div>
+			</div>
+			
+			<div class="container-fluid">
+			
+				<div class="row-fluid">
+					
+					<div class="span4 offset4">
+					
+						<div class="alert alert-error" th:if="${errors.size() != 0}" th:each="error: ${errors}" th:object="${error}">
+							<button type="button" class="close" data-dismiss="alert">&times;</button>
+							<span th:text="*{getKey() + ': ' + getMessage()}">エラー: メッセージ</span>
+						</div>
+					
+						<form method="POST" action="/users/new/confirmation" enctype="application/x-www-form-urlencoded" th:object="${form.data()}">
+							<fieldset>
+							
+								<label>ユーザ名</label>
+								<input id="username" class="input-block-level"
+									type="text" name="username" value="" placeholder="半角英数字" th:attr="value=*{get('username')}"/>
+								
+								<label>パスワード</label>
+								<input id="password" class="input-block-level"
+									type="password" name="password" value="" placeholder="半角英数字" th:attr="value=*{get('password')}"/>
+								
+								<div style="text-align: center;"><button type="submit" class="btn btn-large" >確認</button></div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</section>
+	</body>
+</html>
