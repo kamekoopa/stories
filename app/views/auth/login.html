@@ -26,7 +26,7 @@
 					
 						<div class="alert alert-error" th:if="${errors.size() != 0}" th:each="error: ${errors}" th:object="${error}">
 							<button type="button" class="close" data-dismiss="alert">&times;</button>
-							<span th:text="*{getKey() + ': ' + getMessage()}">エラー: メッセージ</span>
+							<span th:text="*{key() + ': ' + message()}">エラー: メッセージ</span>
 						</div>
 					
 						<form method="POST" action="/auth/authentication" enctype="application/x-www-form-urlencoded" th:object="${form.data()}">
