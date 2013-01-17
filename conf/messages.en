@@ -1,0 +1,31 @@
+text.user_ragistration         = sign up
+text.user_ragistration.confirm = please confirm displayed information
+text.username                  = user name
+text.password                  = password
+text.login                     = login
+text.logout                    = logout
+text.confirmation              = confirm
+text.registration              = register
+text.creation                  = create
+text.main_screen               = main screen
+text.box_creation              = create new box
+text.box.progress              = progress
+text.card.doing                = doing task
+text.card.done_cond            = done condition
+text.card.point                = point
+text.card.done                 = done
+text.card.undone               = undone
+
+
+error.require.username        = user name is required
+error.require.password        = password is required
+error.require.boxname         = box name is required
+error.require.storyname       = "doing task" is required
+error.require.done_cond       = done condition is required
+error.require.points          = point is required
+error.invalid                 = invalid value
+error.invalid.auth_info       = user name or password is invalid
+error.invalid.password_format = password must be alphanumeric and _ - @
+error.invalid.points_format   = point must be positive number
+error.conflict.duplicate_id   = specified user name is already used
+error.fail.create_user        = user registration is failed

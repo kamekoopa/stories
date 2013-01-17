@@ -1,19 +1,16 @@
 package controllers.auth;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import models.applications.AuthService;
 import models.domain.model.auth.UnAuthorizedIdentityException;
 import models.domain.model.auth.formvalue.Login;
+import models.utils.FormErrors;
 import models.utils.LoggedIn;
 import play.data.DynamicForm;
 import play.data.Form;
-import play.data.validation.ValidationError;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -25,14 +22,9 @@ public class AuthController extends Controller {
 
 		Form<Login> loginForm = form(Login.class).fill(Login.defaultValue());
 
-		List<ValidationError> errors = new ArrayList<>();
-		for (Entry<String, List<ValidationError>> entry : loginForm.errors().entrySet() ){
-			errors.addAll(entry.getValue());
-		}
-
 		Map<String, Object> vars = new HashMap<>();
 		vars.put("form", loginForm);
-		vars.put("errors", errors);
+		vars.put("errors", new FormErrors(loginForm));
 
 		return ThymeleafPlugin.ok("auth/login", vars);
 	}
@@ -45,6 +37,7 @@ public class AuthController extends Controller {
 
 			Map<String, Object> vars = new HashMap<>();
 			vars.put("form", loginForm);
+			vars.put("errors", new FormErrors(loginForm));
 
 			return ThymeleafPlugin.badRequest("auth/login", vars);
 
@@ -60,14 +53,9 @@ public class AuthController extends Controller {
 
 				loginForm.reject(e.getMessage());
 
-				List<ValidationError> errors = new ArrayList<>();
-				for (Entry<String, List<ValidationError>> entry : loginForm.errors().entrySet() ){
-					errors.addAll(entry.getValue());
-				}
-
 				Map<String, Object> vars = new HashMap<>();
 				vars.put("form", loginForm);
-				vars.put("errors", errors);
+				vars.put("errors", new FormErrors(loginForm));
 
 				return ThymeleafPlugin.unauthorized("auth/login", vars);
 			}

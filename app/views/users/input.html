@@ -5,7 +5,7 @@
 	layout:decorator="layout"
 	lang="ja">
 	<head>
-		<title>ログイン</title>
+		<title>ユーザ作成</title>
 	</head>
 	<body>
 		<section layout:fragment="content">
@@ -13,7 +13,7 @@
 			<div class="container-fluid">
 				<div class="row-fluid" style="text-align: center;">
 				
-					<h1 class="span4 offset4">ユーザ作成</h1>
+					<h1 class="span4 offset4" th:text="#{text.user_ragistration}">ユーザ作成</h1>
 					
 				</div>
 			</div>
@@ -24,23 +24,25 @@
 					
 					<div class="span4 offset4">
 					
-						<div class="alert alert-error" th:if="${errors.size() != 0}" th:each="error: ${errors}" th:object="${error}">
-							<button type="button" class="close" data-dismiss="alert">&times;</button>
-							<span th:text="*{key() + ': ' + message()}">エラー: メッセージ</span>
+						<div th:if="${errors.exists()}">
+							<div class="alert alert-error" th:each="error: ${errors}">
+								<button type="button" class="close" data-dismiss="alert">&times;</button>
+								<span th:text="${error}">エラーメッセージ</span>
+							</div>
 						</div>
 					
 						<form method="POST" action="/users/new/confirmation" enctype="application/x-www-form-urlencoded" th:object="${form.data()}">
 							<fieldset>
 							
-								<label>ユーザ名</label>
+								<label th:text="#{text.username}">ユーザ名</label>
 								<input id="username" class="input-block-level"
 									type="text" name="username" value="" placeholder="半角英数字" th:attr="value=*{get('username')}"/>
 								
-								<label>パスワード</label>
+								<label th:text="#{text.password}">パスワード</label>
 								<input id="password" class="input-block-level"
 									type="password" name="password" value="" placeholder="半角英数字" th:attr="value=*{get('password')}"/>
 								
-								<div style="text-align: center;"><button type="submit" class="btn btn-large" >確認</button></div>
+								<div style="text-align: center;"><button type="submit" class="btn btn-large" th:text="#{text.confirmation}">確認</button></div>
 							</fieldset>
 						</form>
 					</div>

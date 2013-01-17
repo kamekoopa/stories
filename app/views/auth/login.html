@@ -24,9 +24,11 @@
 					
 					<div class="well span4 offset4">
 					
-						<div class="alert alert-error" th:if="${errors.size() != 0}" th:each="error: ${errors}" th:object="${error}">
-							<button type="button" class="close" data-dismiss="alert">&times;</button>
-							<span th:text="*{key() + ': ' + message()}">エラー: メッセージ</span>
+						<div th:if="${errors.exists()}">
+							<div class="alert alert-error" th:each="error: ${errors}">
+								<button type="button" class="close" data-dismiss="alert">&times;</button>
+								<span th:text="${error}">エラーメッセージ</span>
+							</div>
 						</div>
 					
 						<form method="POST" action="/auth/authentication" enctype="application/x-www-form-urlencoded" th:object="${form.data()}">
@@ -37,7 +39,7 @@
 							
 							<input id="password" class="input-block-level" type="password" name="password" value="" placeholder="password" th:attr="value=*{get('password')}"/>
 							
-							<div style="text-align: center;"><button type="submit" class="btn btn-primary btn-large" >ログイン</button></div>
+							<div style="text-align: center;"><button type="submit" class="btn btn-primary btn-large" th:text="#{text.login}">ログイン</button></div>
 						</form>
 					</div>
 				</div>
@@ -45,7 +47,7 @@
 				<div class="row-fluid">
 					
 					<div class="span4 offset4" style="text-align: right;">
-						<a href="/users/new/input">ユーザ作成</a>
+						<a href="/users/new/input" th:text="#{text.user_ragistration}">ユーザ作成</a>
 					</div>
 				</div>
 			</div>

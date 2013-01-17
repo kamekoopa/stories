@@ -4,6 +4,7 @@ import models.domain.model.boxes.Box;
 import models.domain.model.boxes.formvalue.BoxCreation;
 import models.domain.model.cards.formvalue.CardCreation;
 import models.domain.model.user.User;
+import models.domain.model.user.UserNotFoundException;
 import models.domain.model.user.UserPersistentService;
 import models.domain.model.user.UserRetrieveService;
 import models.domain.model.user.formvalue.UserRegistration;
@@ -38,5 +39,15 @@ public class UserService {
 		parentBox.addStoryCard(createForm.newCard(creator));
 
 		new UserPersistentService().update(creator);
+	}
+
+	public boolean existsUser(final String identifier){
+
+		try {
+			new UserRetrieveService().findByIdentitifier(identifier);
+			return true;
+		} catch (UserNotFoundException e) {
+			return false;
+		}
 	}
 }

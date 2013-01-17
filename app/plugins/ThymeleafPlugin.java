@@ -5,10 +5,13 @@ import java.util.Map;
 
 import nz.net.ultraq.web.thymeleaf.LayoutDialect;
 
+import org.thymeleaf.Arguments;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.TemplateProcessingParameters;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.exceptions.ConfigurationException;
+import org.thymeleaf.messageresolver.AbstractMessageResolver;
+import org.thymeleaf.messageresolver.MessageResolution;
 import org.thymeleaf.resourceresolver.FileResourceResolver;
 import org.thymeleaf.resourceresolver.IResourceResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
@@ -18,6 +21,7 @@ import play.Configuration;
 import play.Logger;
 import play.Plugin;
 import play.api.templates.Html;
+import play.i18n.Messages;
 import play.mvc.Result;
 import play.mvc.Results;
 
@@ -54,6 +58,15 @@ public class ThymeleafPlugin extends Plugin {
 			TemplateEngine engine = new TemplateEngine();
 			engine.setTemplateResolver(resolver);
 			engine.addDialect(new LayoutDialect());
+			engine.setMessageResolver(new AbstractMessageResolver() {
+
+				@Override
+				public MessageResolution resolveMessage(Arguments arguments, String key, Object[] messageParameters) {
+
+					String resolved = Messages.get(key, messageParameters);
+					return new MessageResolution(resolved);
+				}
+			});
 
 			ThymeleafPlugin.engine = engine;
 
@@ -81,6 +94,14 @@ public class ThymeleafPlugin extends Plugin {
 
 	public static Result unauthorized(final String templatePath, final Map<String, Object> variables){
 		return Results.unauthorized(process(templatePath, variables));
+	}
+
+	public static Result conflict(final String templatePath, final Map<String, Object> variables){
+		return Results.status(409, process(templatePath, variables));
+	}
+
+	public static Result internalServerError(final String templatePath, final Map<String, Object> variables){
+		return Results.internalServerError(process(templatePath, variables));
 	}
 
 	private static Html process(final String templatePath, final Map<String, Object> variables){

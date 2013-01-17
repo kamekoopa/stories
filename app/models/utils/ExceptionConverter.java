@@ -15,7 +15,7 @@ public class ExceptionConverter {
 			SQLException se = (SQLException)pe.getCause();
 			switch (se.getErrorCode()){
 				case 23505:
-					throw new DuplicateException();
+					throw new DuplicateException(se.getMessage());
 			}
 
 		}else{

@@ -35,7 +35,7 @@ public class SessionPersistentService {
 			return serverSession.getIdentifier();
 
 		}catch(NotFoundException e){
-			throw new UnAuthorizedIdentityException("invalid username or password");
+			throw new UnAuthorizedIdentityException("error.invalid.auth_info");
 		}
 	}
 

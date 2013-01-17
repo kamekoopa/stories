@@ -6,10 +6,10 @@ import play.data.validation.Constraints.Required;
 
 public class Login {
 
-	@Required
+	@Required(message = "error.require.username")
 	public String name;
 
-	@Required
+	@Required(message = "error.require.password")
 	public String password;
 
 	@Required

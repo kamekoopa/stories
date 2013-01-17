@@ -1,0 +1,31 @@
+text.user_ragistration         = ユーザ登録
+text.user_ragistration.confirm = 入力した内容を確認してください
+text.username                  = ユーザ名
+text.password                  = パスワード
+text.login                     = ログイン
+text.logout                    = ログアウト
+text.confirmation              = 確認
+text.registration              = 登録
+text.creation                  = 作成
+text.main_screen               = メイン画面
+text.box_creation              = ボックス作成
+text.box.progress              = やり遂げ具合
+text.card.doing                = やること
+text.card.done_cond            = 完了条件
+text.card.point                = ポイント
+text.card.done                 = 完了する
+text.card.undone               = 未完了にする
+
+
+error.require.username        = ユーザ名は必須です
+error.require.password        = パスワードは必須です
+error.require.boxname         = ボックス名は必須です
+error.require.storyname       = "やること"は必須です
+error.require.done_cond       = 完了条件は必須です
+error.require.points          = ポイント数は必須です
+error.invalid                 = 不正な値です
+error.invalid.auth_info       = ユーザ名かパスワードが違います
+error.invalid.password_format = パスワードには半角英数字 _ - @ のみ指定できます
+error.invalid.points_format   = ポイント数は0以上の半角数字のみ指定できます
+error.conflict.duplicate_id   = 登録済みのユーザ名です
+error.fail.create_user        = ユーザ登録に失敗しました

@@ -1,10 +1,7 @@
 package controllers.users;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import models.applications.AuthService;
 import models.applications.UserService;
@@ -12,9 +9,9 @@ import models.domain.model.auth.UnAuthorizedIdentityException;
 import models.domain.model.auth.formvalue.Login;
 import models.domain.model.user.formvalue.UserRegistration;
 import models.exception.DuplicateException;
+import models.utils.FormErrors;
 import play.Play;
 import play.data.Form;
-import play.data.validation.ValidationError;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -32,14 +29,9 @@ public class UsersController extends Controller {
 
 		Form<UserRegistration> registerForm = form(UserRegistration.class).fill(UserRegistration.defaultValue());
 
-		List<ValidationError> errors = new ArrayList<>();
-		for (Entry<String, List<ValidationError>> entry : registerForm.errors().entrySet() ){
-			errors.addAll(entry.getValue());
-		}
-
 		Map<String, Object> vars = new HashMap<>();
 		vars.put("form", registerForm);
-		vars.put("errors", errors);
+		vars.put("errors", new FormErrors(registerForm));
 
 		return ThymeleafPlugin.ok("users/input", vars);
 	}
@@ -48,28 +40,61 @@ public class UsersController extends Controller {
 
 		Form<UserRegistration> registerForm = form(UserRegistration.class).bindFromRequest();
 
-		List<ValidationError> errors = new ArrayList<>();
-		for (Entry<String, List<ValidationError>> entry : registerForm.errors().entrySet() ){
-			errors.addAll(entry.getValue());
-		}
-
 		Map<String, Object> vars = new HashMap<>();
 		vars.put("form", registerForm);
-		vars.put("errors", errors);
+		vars.put("errors", new FormErrors(registerForm));
 
-		return ThymeleafPlugin.ok("users/confirmation", vars);
+		if(registerForm.hasErrors()){
+
+			return ThymeleafPlugin.badRequest("users/input", vars);
+
+		}else{
+
+			if(new UserService().existsUser(registerForm.get().username)){
+
+				registerForm.reject("error.conflict.duplicate_id");
+
+				return ThymeleafPlugin.conflict("users/input", vars);
+
+			}else{
+				return ThymeleafPlugin.ok("users/confirmation", vars);
+			}
+		}
 	}
 
-	public static Result register() throws DuplicateException, UnAuthorizedIdentityException {
+	public static Result register() {
 
 		Form<UserRegistration> registerForm = form(UserRegistration.class).bindFromRequest();
 
-		userService.registerNewface(registerForm);
+		try {
+			userService.registerNewface(registerForm);
+		} catch (DuplicateException e) {
+
+			registerForm.reject(e.getMessage());
+
+			Map<String, Object> vars = new HashMap<>();
+			vars.put("form", registerForm);
+			vars.put("errors", new FormErrors(registerForm));
+
+			return ThymeleafPlugin.conflict("users/input", vars);
+		}
+
 
 		UserRegistration registered = registerForm.value().get();
 		Form<Login> loginForm = form(Login.class).fill(Login.set(registered.username, registered.password, "/dash"));
 
-		new AuthService(Http.Context.current()).authenticate(loginForm);
+		try {
+			new AuthService(Http.Context.current()).authenticate(loginForm);
+		} catch (UnAuthorizedIdentityException e) {
+
+			registerForm.reject("error.fail.create_user");
+
+			Map<String, Object> vars = new HashMap<>();
+			vars.put("form", registerForm);
+			vars.put("errors", new FormErrors(registerForm));
+
+			return ThymeleafPlugin.internalServerError("users/input", vars);
+		}
 
 		return redirect("/dash");
 	}

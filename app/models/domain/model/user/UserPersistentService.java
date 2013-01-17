@@ -20,7 +20,13 @@ public class UserPersistentService {
 			newface.ebean.save();
 
 		}catch (PersistenceException e) {
-			ExceptionConverter.convertAndThrow(e);
+			try{
+				ExceptionConverter.convertAndThrow(e);
+			}catch(DuplicateException d){
+				throw new UserDupulicateRagistrationException("error.conflict.duplicate_id");
+			}catch(Throwable t){
+				throw e;
+			}
 		}
 	}
 

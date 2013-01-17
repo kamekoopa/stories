@@ -5,7 +5,7 @@
 	layout:decorator="layout"
 	lang="ja">
 	<head>
-		<title>確認</title>
+		<title>ダッシュボード</title>
 	</head>
 	<body>
 		<section layout:fragment="content">
@@ -13,13 +13,13 @@
 			<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
-					<a class="brand pull-left" href="/dash">メイン画面</a>
+					<a class="brand pull-left" href="/dash" th:text="#{text.main_screen}">メイン画面</a>
 						<ul class="nav pull-right">
 							<li class="divider-vertical"></li>
 							<li>
 								<form class="navbar-form" method="POST" action="/auth/deauthentication">
 									<input type="hidden" name="callback" value="/login" />
-									<button class="btn btn-link" type="submit">ログアウト</button>
+									<button class="btn btn-link" type="submit" th:text="#{text.logout}">ログアウト</button>
 								</form>
 							</li>
 						</ul>
@@ -33,17 +33,19 @@
 					
 					<div class="well">
 					
-						<div class="alert alert-error" th:if="${errors.size() != 0}" th:each="error: ${errors}" th:object="${error}">
-							<button type="button" class="close" data-dismiss="alert">&times;</button>
-							<span th:text="*{key() + ': ' + message()}">エラー: メッセージ</span>
+						<div th:if="${boxErrors.exists()}">
+							<div class="alert alert-error" th:each="error: ${boxErrors}">
+								<button type="button" class="close" data-dismiss="alert">&times;</button>
+								<span th:text="${error}">エラーメッセージ</span>
+							</div>
 						</div>
 					
 						<form class="form-inline" style="margin: 0px;"
-							method="POST" action="/boxes/registry" enctype="application/x-www-form-urlencoded" th:object="${form.value().get()}">
+							method="POST" action="/boxes/registry" enctype="application/x-www-form-urlencoded" th:object="${boxForm.data()}">
 							
-							<label>ボックス作成</label>
-							<input type="text" name="boxName" value="" placeholder="作成するボックス名" th:attr="value=*{boxName}"/>
-							<button type="submit" class="btn btn-success" >作成</button>
+							<label th:text="#{text.box_creation}">ボックス作成</label>
+							<input type="text" name="boxName" value="" placeholder="作成するボックス名" th:attr="value=*{get('boxName')}"/>
+							<button type="submit" class="btn btn-success" th:text="#{text.creation}">作成</button>
 						</form>
 					</div>
 				</div>
@@ -53,20 +55,28 @@
 					<div class="well" th:each="box: ${boxes}" th:object="${box}">
 					
 						<h4 th:text="*{getBoxName()}">ボックス名</h4>
-						<form class="form-inline" method="POST" action="/cards/registry" enctype="application/x-www-form-urlencoded">
-							<input type="hidden" name="boxId" value="" th:attr="value=*{getIdentifier()}"/>
-							<input type="text"   name="front"  value="" placeholder="やること" />
-							<input type="text"   name="back"   value="" placeholder="完了条件" />
-							<input type="text"   name="points" value="" placeholder="ポイント" />
-							<button type="submit" class="btn btn-success">登録</button>
+						
+						<div th:if="${cardErrors.exists()}">
+							<div class="alert alert-error" th:each="error: ${cardErrors}">
+								<button type="button" class="close" data-dismiss="alert">&times;</button>
+								<span th:text="${error}">エラーメッセージ</span>
+							</div>
+						</div>
+						
+						<form class="form-inline" method="POST" action="/cards/registry" enctype="application/x-www-form-urlencoded" th:object="${cardForm.data()}">
+							<input type="hidden" name="boxId"  value="" th:attr="value=${box.getIdentifier()}"/>
+							<input type="text"   name="front"  value="" th:attr="value=*{get('front')}"  placeholder="やること" />
+							<input type="text"   name="back"   value="" th:attr="value=*{get('back')}"   placeholder="完了条件" />
+							<input type="text"   name="points" value="" th:attr="value=*{get('points')}" placeholder="ポイント" />
+							<button type="submit" class="btn btn-success" th:text="#{text.registration}">登録</button>
 						</form>
 						
 						<table class="table table-striped" th:unless="*{isEmpty()}">
 							<thead>
 								<tr>
-									<th>タスク</th>
-									<th>完了条件</th>
-									<th>ポイント</th>
+									<th th:text="#{text.card.doing}">タスク</th>
+									<th th:text="#{text.card.done_cond}">完了条件</th>
+									<th th:text="#{text.card.point}">ポイント</th>
 									<th>&nbsp;</th>
 								</tr>
 							</thead>
@@ -80,13 +90,13 @@
 									<form style="margin:0px;" method="POST" action="/cards/finished" enctype="application/x-www-form-urlencoded" th:unless="${card.isDone()}">
 										<input type="hidden" name="cardId" value="" th:attr="value=${card.getIdentifier()}"/>
 										<input type="hidden" name="done"   value="true" />
-										<button type="submit" class="btn btn-success">Done</button>
+										<button type="submit" class="btn btn-success" th:text="#{text.card.done}">Done</button>
 									</form>
 
 									<form style="margin:0px;" method="POST" action="/cards/finished" enctype="application/x-www-form-urlencoded" th:if="${card.isDone()}">
 										<input type="hidden" name="cardId" value="" th:attr="value=${card.getIdentifier()}"/>
 										<input type="hidden" name="done"   value="false" />
-										<button type="submit" class="btn btn-inverse">未完にする</button>
+										<button type="submit" class="btn btn-inverse" th:text="#{text.card.undone}">未完にする</button>
 									</form>
 
 								</td>
@@ -94,7 +104,7 @@
 						</table>
 						
 						<label>
-							やり遂げ具合 <span th:text="*{getPercentageOfProgress()}">50</span> % (<span th:text="*{getCompletedPoint()}">50</span> / <span th:text="*{getTotalPoint()}">100</span>)
+							<span th:text="#{text.box.progress}">やり遂げ具合</span> <span th:text="*{getPercentageOfProgress()}">50</span> % (<span th:text="*{getCompletedPoint()}">50</span> / <span th:text="*{getTotalPoint()}">100</span>)
 						</label>
 						<div class="progress">
 							<div class="bar" style="width: 50%;" th:attr="style='width: '+ *{getPercentageOfProgress()} + '%;'"></div>

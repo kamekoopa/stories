@@ -1,10 +1,7 @@
 package controllers.dash;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import models.applications.AuthService;
 import models.applications.CardService;
@@ -16,9 +13,9 @@ import models.domain.model.cards.formvalue.CardCreation;
 import models.domain.model.cards.formvalue.CardFinish;
 import models.domain.model.user.User;
 import models.exception.NotFoundException;
+import models.utils.FormErrors;
 import models.utils.LoggedIn;
 import play.data.Form;
-import play.data.validation.ValidationError;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -29,20 +26,18 @@ public class MainController extends Controller {
 	@LoggedIn
 	public static Result index() throws UnAuthorizedIdentityException, NotFoundException{
 
-		Form<BoxCreation> form = form(BoxCreation.class).fill(BoxCreation.defaultValue());
+		Form<BoxCreation> boxForm = form(BoxCreation.class).fill(BoxCreation.defaultValue());
+		Form<CardCreation> cardForm = form(CardCreation.class).fill(CardCreation.defaultValue());
 
 		User viewer = new AuthService(Http.Context.current()).getSessionOwner();
 		BoxList boxes = viewer.getMyBoxes();
 
-		List<ValidationError> errors = new ArrayList<>();
-		for (Entry<String, List<ValidationError>> entry : form.errors().entrySet() ){
-			errors.addAll(entry.getValue());
-		}
-
 		Map<String, Object> vars = new HashMap<>();
-		vars.put("form", form);
-		vars.put("errors", errors);
-		vars.put("boxes", boxes);
+		vars.put("boxForm"   , boxForm);
+		vars.put("boxErrors" , new FormErrors(boxForm));
+		vars.put("cardForm"  , cardForm);
+		vars.put("cardErrors", new FormErrors(cardForm));
+		vars.put("boxes"     , boxes);
 
 		return ThymeleafPlugin.ok("dash/index", vars);
 	}
@@ -51,30 +46,64 @@ public class MainController extends Controller {
 	public static Result createBox() throws UnAuthorizedIdentityException, NotFoundException{
 
 		Form<BoxCreation> newBoxForm = form(BoxCreation.class).bindFromRequest();
+		Form<CardCreation> cardForm = form(CardCreation.class).fill(CardCreation.defaultValue());
 
 		User viewer = new AuthService(Http.Context.current()).getSessionOwner();
-		new UserService().addNewBox(viewer.getIdentifier(), newBoxForm);
 
-		return redirect(controllers.dash.routes.MainController.index());
+		if(!newBoxForm.hasErrors()){
+			new UserService().addNewBox(viewer.getIdentifier(), newBoxForm);
+		}
+
+		BoxList boxes = viewer.getMyBoxes();
+
+		Map<String, Object> vars = new HashMap<>();
+		vars.put("boxForm"   , newBoxForm);
+		vars.put("boxErrors" , new FormErrors(newBoxForm));
+		vars.put("cardForm"  , cardForm);
+		vars.put("cardErrors", new FormErrors(cardForm));
+		vars.put("boxes"     , boxes);
+
+		if(newBoxForm.hasErrors()){
+			return ThymeleafPlugin.badRequest("dash/index", vars);
+		}else{
+			return ThymeleafPlugin.ok("dash/index", vars);
+		}
 	}
 
 	@LoggedIn
 	public static Result createCard() throws UnAuthorizedIdentityException, NotFoundException{
 
+		Form<BoxCreation> boxForm = form(BoxCreation.class).fill(BoxCreation.defaultValue());
 		Form<CardCreation> newCardForm = form(CardCreation.class).bindFromRequest();
 
 		User viewer = new AuthService(Http.Context.current()).getSessionOwner();
-		new UserService().addNewCard(viewer.getIdentifier(), newCardForm);
 
-		return redirect(controllers.dash.routes.MainController.index());
+		if(!newCardForm.hasErrors()){
+			new UserService().addNewCard(viewer.getIdentifier(), newCardForm);
+		}
+
+		BoxList boxes = viewer.getMyBoxes();
+
+		Map<String, Object> vars = new HashMap<>();
+		vars.put("boxForm"   , boxForm);
+		vars.put("boxErrors" , new FormErrors(boxForm));
+		vars.put("cardForm"  , newCardForm);
+		vars.put("cardErrors", new FormErrors(newCardForm));
+		vars.put("boxes"     , boxes);
+
+		if(newCardForm.hasErrors()){
+			return ThymeleafPlugin.badRequest("dash/index", vars);
+		}else{
+			return ThymeleafPlugin.ok("dash/index", vars);
+		}
 	}
 
 	@LoggedIn
-	public static Result finishCard() throws NotFoundException {
+	public static Result finishCard() throws UnAuthorizedIdentityException, NotFoundException{
 
 		Form<CardFinish> finishForm = form(CardFinish.class).bindFromRequest();
 		new CardService().changeDoneState(finishForm);
 
-		return redirect(controllers.dash.routes.MainController.index());
+		return index();
 	}
 }
