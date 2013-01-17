@@ -6,15 +6,15 @@ import java.util.List;
 
 import models.infra.ebean.entity.StoryCardEbean;
 
-public class CardList implements Iterable<Card> {
+public class StoryCardList implements Iterable<StoryCard> {
 
 	private final List<StoryCardEbean> internalCollection;
 
-	public CardList(List<StoryCardEbean> cardEbeanList){
+	public StoryCardList(List<StoryCardEbean> cardEbeanList){
 		this.internalCollection = cardEbeanList;
 	}
 
-	public CardList add(Card card){
+	public StoryCardList add(StoryCard card){
 
 		this.internalCollection.add(card.ebean);
 
@@ -60,16 +60,16 @@ public class CardList implements Iterable<Card> {
 	}
 
 	@Override
-	public Iterator<Card> iterator() {
+	public Iterator<StoryCard> iterator() {
 
 		return this.toDomainList().iterator();
 	}
 
-	private List<Card> toDomainList(){
+	private List<StoryCard> toDomainList(){
 
-		List<Card> cards = new ArrayList<>();
+		List<StoryCard> cards = new ArrayList<>();
 		for(StoryCardEbean ebean : this.internalCollection){
-			cards.add(Card.Builder.fromEbean(ebean));
+			cards.add(StoryCard.Builder.fromEbean(ebean));
 		}
 
 		return cards;

@@ -1,6 +1,6 @@
 package models.domain.model.cards.formvalue;
 
-import models.domain.model.cards.Card;
+import models.domain.model.cards.StoryCard;
 import models.domain.model.user.User;
 
 import org.springframework.format.annotation.NumberFormat;
@@ -24,9 +24,9 @@ public class CardCreation {
 	public Integer points;
 
 
-	public Card newCard(User creator){
+	public StoryCard newCard(User creator){
 
-		return Card.Builder.newCard(creator, this.front, this.back, this.points);
+		return StoryCard.Builder.newCard(creator, this.front, this.back, this.points);
 	}
 
 	public static CardCreation defaultValue(){

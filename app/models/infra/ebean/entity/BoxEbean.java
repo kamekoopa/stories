@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -30,11 +29,10 @@ public class BoxEbean extends Model {
 	public Long id;
 	@Constraints.Required
 
-	@ManyToOne(targetEntity = UserEbean.class)
-	@JoinColumn(name="created_by_id", referencedColumnName = "id")
+	@ManyToOne
 	public UserEbean createdBy;
 
-	@OneToMany(targetEntity = StoryCardEbean.class, mappedBy = "box", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "box", cascade = CascadeType.ALL)
 	public List<StoryCardEbean> stories = new ArrayList<>();
 
 	@Constraints.Required

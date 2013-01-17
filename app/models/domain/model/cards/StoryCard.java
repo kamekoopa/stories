@@ -5,11 +5,11 @@ import models.domain.model.user.User;
 import models.exception.NotFoundException;
 import models.infra.ebean.entity.StoryCardEbean;
 
-public class Card extends Entity<Long, Card>{
+public class StoryCard extends Entity<Long, StoryCard>{
 
 	protected final StoryCardEbean ebean;
 
-	protected Card(StoryCardEbean ebean){
+	protected StoryCard(StoryCardEbean ebean){
 		this.ebean = ebean;
 	}
 
@@ -34,19 +34,19 @@ public class Card extends Entity<Long, Card>{
 		return this.ebean.done;
 	}
 
-	public Card done(){
+	public StoryCard done(){
 		this.ebean.done = true;
 		return this;
 	}
 
-	public Card notDone(){
+	public StoryCard notDone(){
 		this.ebean.done = false;
 		return this;
 	}
 	
 	public static class Builder {
 
-		public static Card newCard(final User creator, final String front, final String back, final Integer points){
+		public static StoryCard newCard(final User creator, final String front, final String back, final Integer points){
 
 			StoryCardEbean newCard = new StoryCardEbean();
 			newCard.createdBy = creator.ebean();
@@ -55,23 +55,23 @@ public class Card extends Entity<Long, Card>{
 			newCard.done = false;
 			newCard.points = points;
 
-			return new Card(newCard);
+			return new StoryCard(newCard);
 		}
 
-		public static Card fromEbean(StoryCardEbean ebean){
-			return new Card(ebean);
+		public static StoryCard fromEbean(StoryCardEbean ebean){
+			return new StoryCard(ebean);
 		}
 	}
 
 	public static class Finder {
 
-		public static Card findByIdentifier(Long identifier) throws NotFoundException {
+		public static StoryCard findByIdentifier(Long identifier) throws NotFoundException {
 
 			StoryCardEbean ebean = StoryCardEbean.find.byId(identifier);
 			if(ebean == null){
 				throw new NotFoundException(identifier);
 			}else{
-				return new Card(ebean);
+				return new StoryCard(ebean);
 			}
 		}
 	}

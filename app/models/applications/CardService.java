@@ -1,7 +1,7 @@
 package models.applications;
 
-import models.domain.model.cards.Card;
-import models.domain.model.cards.CardPersistentService;
+import models.domain.model.cards.StoryCard;
+import models.domain.model.cards.StoryCardPersistentService;
 import models.domain.model.cards.formvalue.CardFinish;
 import models.exception.NotFoundException;
 import play.data.Form;
@@ -12,13 +12,13 @@ public class CardService {
 
 		CardFinish cardFinish = form.get();
 
-		Card card = Card.Finder.findByIdentifier(cardFinish.cardId);
+		StoryCard card = StoryCard.Finder.findByIdentifier(cardFinish.cardId);
 		if(cardFinish.done){
 			card.done();
 		}else{
 			card.notDone();
 		}
 
-		new CardPersistentService().update(card);
+		new StoryCardPersistentService().update(card);
 	}
 }

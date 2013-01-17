@@ -4,20 +4,20 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 
 import models.domain.model.Entity;
-import models.domain.model.cards.Card;
-import models.domain.model.cards.CardList;
+import models.domain.model.cards.StoryCard;
+import models.domain.model.cards.StoryCardList;
 import models.domain.model.user.User;
 import models.infra.ebean.entity.BoxEbean;
 
-public class Box extends Entity<Long, Box> implements Iterable<Card> {
+public class Box extends Entity<Long, Box> implements Iterable<StoryCard> {
 
 	protected final BoxEbean ebean;
 
-	protected final CardList cardList;
+	protected final StoryCardList cardList;
 
 	protected Box(final BoxEbean boxEbean){
 		this.ebean = boxEbean;
-		this.cardList = new CardList(this.ebean.stories);
+		this.cardList = new StoryCardList(this.ebean.stories);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class Box extends Entity<Long, Box> implements Iterable<Card> {
 		return User.Builder.fromEbean(this.ebean.createdBy);
 	}
 
-	public Box addStoryCard(Card card){
+	public Box addStoryCard(StoryCard card){
 
 		this.cardList.add(card);
 
@@ -73,7 +73,7 @@ public class Box extends Entity<Long, Box> implements Iterable<Card> {
 	}
 
 	@Override
-	public Iterator<Card> iterator(){
+	public Iterator<StoryCard> iterator(){
 		return this.cardList.iterator();
 	}
 

@@ -33,10 +33,10 @@ public class UserEbean extends Model {
 	@Constraints.Required
 	public String pass;
 
-	@OneToMany(targetEntity = BoxEbean.class, mappedBy = "createdBy", cascade=CascadeType.ALL)
+	@OneToMany(mappedBy = "createdBy", cascade=CascadeType.ALL)
 	public List<BoxEbean> createdBoxes = new ArrayList<>();
 
-	@OneToMany
+	@OneToMany(mappedBy = "createdBy", cascade=CascadeType.ALL)
 	public List<StoryCardEbean> createdCards = new ArrayList<>();
 
 	@CreatedTimestamp
