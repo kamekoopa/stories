@@ -109,7 +109,7 @@ public class ThymeleafPlugin extends Plugin {
 		Context ctx = new Context();
 		ctx.setVariables(variables);
 
-		return new Html(engine.process(templatePath, ctx));
+		return Html.apply(engine.process(templatePath, ctx));
 	}
 
 

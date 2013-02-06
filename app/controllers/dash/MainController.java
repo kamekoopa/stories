@@ -20,6 +20,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import plugins.ThymeleafPlugin;
+import static play.data.Form.form;
 
 public class MainController extends Controller {
 

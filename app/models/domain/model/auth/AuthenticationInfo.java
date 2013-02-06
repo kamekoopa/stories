@@ -2,7 +2,7 @@ package models.domain.model.auth;
 
 import models.domain.model.user.Password;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 public final class AuthenticationInfo {

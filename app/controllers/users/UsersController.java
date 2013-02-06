@@ -17,6 +17,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import plugins.GuicePlugin;
 import plugins.ThymeleafPlugin;
+import static play.data.Form.form;
 
 public class UsersController extends Controller {
 

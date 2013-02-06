@@ -1,6 +1,6 @@
+import play.Project._
 import sbt._
 import Keys._
-import PlayProject._
 
 object ApplicationBuild extends Build {
 
@@ -9,6 +9,8 @@ object ApplicationBuild extends Build {
 
     val appDependencies = Seq(
       // Add your project dependencies here,
+      javaCore, javaJdbc, javaJpa, javaEbean, filters,
+      
       "commons-codec"                % "commons-codec"            % "1.7",
       "org.apache.commons"           % "commons-lang3"            % "3.1",
       "com.google.inject"            % "guice"                    % "3.0",
@@ -17,7 +19,7 @@ object ApplicationBuild extends Build {
       "nz.net.ultraq.web.thymeleaf"  % "thymeleaf-layout-dialect" % "1.0.5"
     )
 
-    val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
+    val main = play.Project(appName, appVersion, appDependencies).settings(
       // Add your own project settings here      
     )
 

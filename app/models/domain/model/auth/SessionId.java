@@ -3,7 +3,7 @@ package models.domain.model.auth;
 import models.domain.model.user.User;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import scala.collection.mutable.StringBuilder;
