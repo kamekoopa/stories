@@ -94,4 +94,11 @@ public class Box extends Entity<Long, Box> implements Iterable<StoryCard> {
 			return new Box(ebean);
 		}
 	}
+	
+	public static class Finder {
+		
+		public static BoxList list(){
+			return new BoxList(BoxEbean.find.all());
+		}
+	}
 }

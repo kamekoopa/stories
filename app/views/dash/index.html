@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
-	layout:decorator="layout"
-	lang="ja">
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" lang="ja">
 	<head>
-		<title>ダッシュボード</title>
+		<title>Stories</title>
+		<link rel="shortcut icon" type="image/png" href="../../../public/images/favicon.png" th:href="'/assets/images/favicon.png'"/>
+		
+		<link rel="stylesheet" media="screen" href="../../../public/stylesheets/main.css"                       th:href="'/assets/stylesheets/main.css'"/>
+		<link rel="stylesheet" media="screen" href="../../../public/bootstrap/css/bootstrap.min.css"            th:href="'/assets/bootstrap/css/bootstrap.min.css'"/>
+		<link rel="stylesheet" media="screen" href="../../../public/bootstrap/css/bootstrap-responsive.min.css" th:href="'/assets/bootstrap/css/bootstrap-responsive.min.css'"/>
+		
+		<script type="text/javascript" src="../../../public/javascripts/jquery-1.7.1.min.js" th:src="'/assets/javascripts/jquery-1.7.1.min.js'"></script>
+		<script type="text/javascript" src="../../../public/bootstrap/js/bootstrap.min.js"   th:src="'/assets/bootstrap/js/bootstrap.min.js'"></script>
 	</head>
-	<body>
+	<body style="padding-top: 60px;">
 		<section layout:fragment="content">
 		
 			<div class="navbar navbar-fixed-top">
@@ -26,20 +32,25 @@
 					</div>
 				</div>
 			</div>
-		
+			
+			<div class="container-fluid">
+				<div th:if="${boxErrors.exists()}">
+					<div class="alert alert-error" th:each="error: ${boxErrors}">
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+						<span th:text="${error}">エラーメッセージ</span>
+					</div>
+				</div>
+			</div>			
+						
 			<div class="container-fluid">
 			
-				<div class="row-fluid">
+				<div class="span10 well">
+				
+					<div th:if="${box}">
 					
-					<div class="well">
-					
-						<div th:if="${boxErrors.exists()}">
-							<div class="alert alert-error" th:each="error: ${boxErrors}">
-								<button type="button" class="close" data-dismiss="alert">&times;</button>
-								<span th:text="${error}">エラーメッセージ</span>
-							</div>
-						</div>
-					
+						<h3>box1</h3>
+						
+						<!--
 						<form class="form-inline" style="margin: 0px;"
 							method="POST" action="/boxes/registry" enctype="application/x-www-form-urlencoded" th:object="${boxForm.data()}">
 							
@@ -47,21 +58,7 @@
 							<input type="text" name="boxName" value="" placeholder="作成するボックス名" th:attr="value=*{get('boxName')}"/>
 							<button type="submit" class="btn btn-success" th:text="#{text.creation}">作成</button>
 						</form>
-					</div>
-				</div>
-			
-				<div class="row-fluid">
-				
-					<div class="well" th:each="box: ${boxes}" th:object="${box}">
-					
-						<h4 th:text="*{getBoxName()}">ボックス名</h4>
-						
-						<div th:if="${cardErrors.exists()}">
-							<div class="alert alert-error" th:each="error: ${cardErrors}">
-								<button type="button" class="close" data-dismiss="alert">&times;</button>
-								<span th:text="${error}">エラーメッセージ</span>
-							</div>
-						</div>
+						-->
 						
 						<form class="form-inline" method="POST" action="/cards/registry" enctype="application/x-www-form-urlencoded" th:object="${cardForm.data()}">
 							<input type="hidden" name="boxId"  value="" th:attr="value=${box.getIdentifier()}"/>
@@ -70,6 +67,8 @@
 							<input type="text"   name="points" value="" th:attr="value=*{get('points')}" placeholder="ポイント" />
 							<button type="submit" class="btn btn-success" th:text="#{text.registration}">登録</button>
 						</form>
+						
+						<hr />
 						
 						<table class="table table-striped" th:unless="*{isEmpty()}">
 							<thead>
@@ -101,6 +100,26 @@
 
 								</td>
 							</tr>
+							<tr th:each="card: ${box}" th:classappend="${card.isDone()}? 'muted'" th:attr="style=${card.isDone()}? 'text-decoration: line-through;'">
+								<td th:text="${card.getFront()}" >やること</td>
+								<td th:text="${card.getBack()}">完了条件</td>
+								<td th:text="${card.getPoints() + ' pt'}">10 pt</td>
+								<td style="text-align: right;">
+
+									<form style="margin:0px;" method="POST" action="/cards/finished" enctype="application/x-www-form-urlencoded" th:unless="${card.isDone()}">
+										<input type="hidden" name="cardId" value="" th:attr="value=${card.getIdentifier()}"/>
+										<input type="hidden" name="done"   value="true" />
+										<button type="submit" class="btn btn-success" th:text="#{text.card.done}">Done</button>
+									</form>
+
+									<form style="margin:0px;" method="POST" action="/cards/finished" enctype="application/x-www-form-urlencoded" th:if="${card.isDone()}">
+										<input type="hidden" name="cardId" value="" th:attr="value=${card.getIdentifier()}"/>
+										<input type="hidden" name="done"   value="false" />
+										<button type="submit" class="btn btn-inverse" th:text="#{text.card.undone}">未完にする</button>
+									</form>
+
+								</td>
+							</tr>
 						</table>
 						
 						<label>
@@ -108,10 +127,45 @@
 						</label>
 						<div class="progress">
 							<div class="bar" style="width: 50%;" th:attr="style='width: '+ *{getPercentageOfProgress()} + '%;'"></div>
-						</div>
-
+						</div>							
 					</div>
+					
+					<!--
+					<div class="row">
+						<div class="well" th:each="box: ${boxes}" th:object="${box}">
+					
+							<h4 th:text="*{getBoxName()}">ボックス名</h4>
+							
+							<div th:if="${cardErrors.exists()}">
+								<div class="alert alert-error" th:each="error: ${cardErrors}">
+									<button type="button" class="close" data-dismiss="alert">&times;</button>
+									<span th:text="${error}">エラーメッセージ</span>
+								</div>
+							</div>
+						</div>							
+					</div>
+					-->
+					
 				</div>
+				
+				<div class="span2">
+				
+					<h3>boxes</h3>
+					
+					<hr />
+					
+					<form>
+						<input type="text" class="input-block-level" placeholder="box name" />
+						<button class="btn btn-primary">create box</button>
+					</form>
+					
+					<ul class="nav nav-tabs nav-stacked">
+						<li class="active"><a href="#">box1</a></li>
+						<li><a href="#">box2</a></li>
+						<li><a href="#">box3</a></li>
+					</ul>
+				</div>
+				
 			</div>
 		</section>
 	</body>

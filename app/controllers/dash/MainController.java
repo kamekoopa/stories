@@ -7,6 +7,7 @@ import models.applications.AuthService;
 import models.applications.CardService;
 import models.applications.UserService;
 import models.domain.model.auth.UnAuthorizedIdentityException;
+import models.domain.model.boxes.Box;
 import models.domain.model.boxes.BoxList;
 import models.domain.model.boxes.formvalue.BoxCreation;
 import models.domain.model.cards.formvalue.CardCreation;
@@ -31,13 +32,14 @@ public class MainController extends Controller {
 		Form<CardCreation> cardForm = form(CardCreation.class).fill(CardCreation.defaultValue());
 
 		User viewer = new AuthService(Http.Context.current()).getSessionOwner();
-		BoxList boxes = viewer.getMyBoxes();
+		BoxList boxes = Box.Finder.list();
 
 		Map<String, Object> vars = new HashMap<>();
 		vars.put("boxForm"   , boxForm);
 		vars.put("boxErrors" , new FormErrors(boxForm));
 		vars.put("cardForm"  , cardForm);
 		vars.put("cardErrors", new FormErrors(cardForm));
+		vars.put("viewer"    , viewer);
 		vars.put("boxes"     , boxes);
 
 		return ThymeleafPlugin.ok("dash/index", vars);
